@@ -7,423 +7,206 @@ const http = require('http');
 const path = require('path');
 require('dotenv').config();
 
-// Initialize Express app and HTTP server
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true
-  },
-  transports: ['websocket', 'polling']
+  cors: { origin: "*", methods: ["GET","POST"], credentials: true },
+  transports: ['websocket','polling']
 });
-
 const port = process.env.PORT || 3000;
 
-// ========================
-// MIDDLEWARE CONFIGURATION
-// ========================
-
+//—— Middleware —————————————————————————————————————————————
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-
-// Enhanced CORS middleware
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
+app.use((req,res,next) => {
+  res.setHeader('Access-Control-Allow-Origin','*');
+  res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Credentials','true');
+  if (req.method==='OPTIONS') return res.sendStatus(200);
   next();
 });
-
-// Serve static files with proper MIME types
 app.use(express.static(path.join(__dirname), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    } else if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    } else if (path.endsWith('.html')) {
-      res.setHeader('Content-Type', 'text/html');
-    }
+  setHeaders:(res,filePath)=>{
+    if(filePath.endsWith('.css')) res.setHeader('Content-Type','text/css');
+    if(filePath.endsWith('.js'))  res.setHeader('Content-Type','application/javascript');
+    if(filePath.endsWith('.html'))res.setHeader('Content-Type','text/html');
   }
 }));
 
-// ========================
-// COLLABORATION DATA STRUCTURES
-// ========================
+//—— Collaboration Data Structures —————————————————————————————
+const rooms = new Map();       // roomId -> { users:Set, graphState:Object, metadata:Object }
+const roomUsers = new Map();   // roomId -> Map(socketId->userInfo)
+const userRooms = new Map();   // socketId -> roomId
+const roomActivity = new Map();// roomId -> lastActivity timestamp
 
-// Room management
-const rooms = new Map(); // roomId -> { users: Set, graphState: Object, metadata: Object }
-const roomUsers = new Map(); // roomId -> Map(socketId -> userInfo)
-const userRooms = new Map(); // socketId -> roomId
-const roomActivity = new Map(); // roomId -> lastActivity timestamp
+const ROOM_CLEANUP_INTERVAL = 30*60*1000; // 30m
+const ROOM_INACTIVE_TIMEOUT  = 60*60*1000; // 1h
 
-// Enhanced room cleanup interval
-const ROOM_CLEANUP_INTERVAL = 30 * 60 * 1000; // 30 minutes
-const ROOM_INACTIVE_TIMEOUT = 60 * 60 * 1000; // 1 hour
-
-// ========================
-// HELPER FUNCTIONS
-// ========================
-
-/**
- * Generate a unique 6-character room ID
- */
+//—— Helper Functions ————————————————————————————————————————
 function generateRoomId() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+  let id = '';
+  for(let i=0;i<6;i++) id += chars.charAt(Math.floor(Math.random()*chars.length));
+  return id;
 }
-
-/**
- * Create a new collaboration room
- */
 function createRoom(roomId) {
   const room = {
     id: roomId,
     users: new Set(),
-    graphState: {
-      nodes: [],
-      edges: [],
-      settings: {
-        isDirected: false,
-        isWeighted: false
-      }
-    },
-    metadata: {
-      createdAt: Date.now(),
-      createdBy: null,
-      version: 1
-    }
+    graphState: { nodes:[], edges:[], settings:{ isDirected:false, isWeighted:false }},
+    metadata: { createdAt:Date.now(), createdBy:null, version:1 }
   };
-  
   rooms.set(roomId, room);
   roomUsers.set(roomId, new Map());
   roomActivity.set(roomId, Date.now());
-  
-  console.log(`🏠 Room ${roomId} created successfully`);
+  console.log(`🏠 Room ${roomId} created`);
   return room;
 }
-
-/**
- * Join a user to a room
- */
-function joinRoom(roomId, socketId, userInfo = {}) {
-  if (!rooms.has(roomId)) {
-    console.log(`❌ Room ${roomId} not found`);
-    return null;
-  }
-
+function joinRoom(roomId,socketId,userInfo={}) {
+  if(!rooms.has(roomId)) return null;
   const room = rooms.get(roomId);
   const users = roomUsers.get(roomId);
-  
   room.users.add(socketId);
-  users.set(socketId, {
-    id: socketId,
-    joinedAt: Date.now(),
-    ...userInfo
-  });
+  users.set(socketId, { id:socketId, joinedAt:Date.now(), ...userInfo });
   userRooms.set(socketId, roomId);
   roomActivity.set(roomId, Date.now());
-  
-  console.log(`🚪 User ${socketId} joined room ${roomId} (${room.users.size} users)`);
+  console.log(`🚪 ${socketId} joined ${roomId}`);
   return room;
 }
-
-/**
- * Remove a user from a room
- */
 function leaveRoom(socketId) {
   const roomId = userRooms.get(socketId);
-  if (!roomId) return null;
-
-  const room = rooms.get(roomId);
-  const users = roomUsers.get(roomId);
-  
-  if (room && users) {
-    room.users.delete(socketId);
-    users.delete(socketId);
-    userRooms.delete(socketId);
-    roomActivity.set(roomId, Date.now());
-    
-    // Clean up empty rooms
-    if (room.users.size === 0) {
-      rooms.delete(roomId);
-      roomUsers.delete(roomId);
-      roomActivity.delete(roomId);
-      console.log(`🗑️ Cleaned up empty room: ${roomId}`);
-    } else {
-      console.log(`🚪 User ${socketId} left room ${roomId} (${room.users.size} users remaining)`);
-    }
+  if(!roomId) return null;
+  const room = rooms.get(roomId), users = roomUsers.get(roomId);
+  room.users.delete(socketId);
+  users.delete(socketId);
+  userRooms.delete(socketId);
+  roomActivity.set(roomId, Date.now());
+  if(room.users.size===0) {
+    rooms.delete(roomId);
+    roomUsers.delete(roomId);
+    roomActivity.delete(roomId);
+    console.log(`🗑️ Cleaned up empty room ${roomId}`);
   }
-  
   return roomId;
 }
-
-/**
- * Update room state based on graph actions
- */
-function updateRoomState(roomId, action) {
+function updateRoomState(roomId,action) {
   const room = rooms.get(roomId);
-  if (!room) return false;
-
-  const { graphState } = room;
+  if(!room) return false;
+  const state = room.graphState;
   room.metadata.version++;
   roomActivity.set(roomId, Date.now());
-
   try {
-    switch (action.type) {
+    switch(action.type){
       case 'add-node':
-        // Check if node already exists
-        const existingNode = graphState.nodes.find(n => n.id === action.data.id);
-        if (!existingNode) {
-          graphState.nodes.push({
-            id: action.data.id,
-            name: action.data.name,
-            x: action.data.x,
-            y: action.data.y,
-            timestamp: Date.now()
-          });
+        if(!state.nodes.find(n=>n.id===action.data.id)) {
+          state.nodes.push({ ...action.data, timestamp:Date.now() });
         }
         break;
-
       case 'delete-node':
-        graphState.nodes = graphState.nodes.filter(n => n.id !== action.data.nodeId);
-        graphState.edges = graphState.edges.filter(e => 
-          e.from !== action.data.nodeId && e.to !== action.data.nodeId
-        );
+        state.nodes = state.nodes.filter(n=>n.id!==action.data.nodeId);
+        state.edges = state.edges.filter(e=>e.from!==action.data.nodeId&&e.to!==action.data.nodeId);
         break;
-
       case 'add-edge':
-        // Check if edge already exists
-        const edgeExists = graphState.edges.some(e => 
-          (e.from === action.data.fromId && e.to === action.data.toId) ||
-          (!graphState.settings.isDirected && e.from === action.data.toId && e.to === action.data.fromId)
+        const exists = state.edges.some(e=>
+          (e.from===action.data.fromId&&e.to===action.data.toId) ||
+          (!state.settings.isDirected && e.from===action.data.toId&&e.to===action.data.fromId)
         );
-        
-        if (!edgeExists) {
-          graphState.edges.push({
-            id: action.data.id,
-            from: action.data.fromId,
-            to: action.data.toId,
-            weight: action.data.weight || 1,
-            edgeId: `${action.data.fromId}-${action.data.toId}`,
-            timestamp: Date.now()
-          });
+        if(!exists) {
+          state.edges.push({ ...action.data, edgeId:`${action.data.fromId}-${action.data.toId}`, timestamp:Date.now() });
         }
         break;
-
       case 'clear-graph':
-        graphState.nodes = [];
-        graphState.edges = [];
+        state.nodes=[], state.edges=[];
         break;
-
       case 'update-settings':
-        graphState.settings = { ...graphState.settings, ...action.data };
+        state.settings = { ...state.settings, ...action.data };
         break;
-
       case 'rename-node':
-        const nodeToRename = graphState.nodes.find(n => n.id === action.data.nodeId);
-        if (nodeToRename) {
-          nodeToRename.name = action.data.newName;
-        }
+        const node = state.nodes.find(n=>n.id===action.data.nodeId);
+        if(node) node.name = action.data.newName;
         break;
-
       default:
-        console.warn(`Unknown action type: ${action.type}`);
         return false;
     }
-    
-    console.log(`📊 Room ${roomId} state updated: ${action.type}`);
+    console.log(`📊 Room ${roomId} updated: ${action.type}`);
     return true;
-  } catch (error) {
-    console.error(`Error updating room ${roomId} state:`, error);
+  } catch(err){
+    console.error(`Error updating ${roomId}:`,err);
     return false;
   }
 }
-
-/**
- * Clean up inactive rooms
- */
-function cleanupInactiveRooms() {
-  const now = Date.now();
-  const roomsToDelete = [];
-
-  for (const [roomId, lastActivity] of roomActivity) {
-    if (now - lastActivity > ROOM_INACTIVE_TIMEOUT) {
-      roomsToDelete.push(roomId);
-    }
+function cleanupInactiveRooms(){
+  const now = Date.now(), toDelete = [];
+  for(const [rid,last] of roomActivity){
+    if(now-last>ROOM_INACTIVE_TIMEOUT) toDelete.push(rid);
   }
-
-  roomsToDelete.forEach(roomId => {
-    const room = rooms.get(roomId);
-    if (room && room.users.size === 0) {
-      rooms.delete(roomId);
-      roomUsers.delete(roomId);
-      roomActivity.delete(roomId);
-      console.log(`🗑️ Cleaned up inactive room: ${roomId}`);
+  toDelete.forEach(rid=>{
+    if(rooms.get(rid)?.users.size===0) {
+      rooms.delete(rid);
+      roomUsers.delete(rid);
+      roomActivity.delete(rid);
+      console.log(`🗑️ Removed inactive room ${rid}`);
     }
   });
-
-  if (roomsToDelete.length > 0) {
-    console.log(`🧹 Cleaned up ${roomsToDelete.length} inactive rooms`);
-  }
 }
-
-// Set up periodic cleanup
 setInterval(cleanupInactiveRooms, ROOM_CLEANUP_INTERVAL);
 
-// ========================
-// SOCKET.IO REAL-TIME COLLABORATION
-// ========================
+//—— Socket.IO Real-time Collaboration —————————————————————————
+io.on('connection', socket => {
+  console.log(`👤 Connected: ${socket.id}`);
 
-io.on('connection', (socket) => {
-  console.log(`👤 New connection: ${socket.id}`);
+  socket.on('create-room', (opts={})=>{
+    let roomId, attempts=0;
+    do { roomId = generateRoomId(); attempts++; }
+    while(rooms.has(roomId) && attempts<10);
+    if(attempts>=10) return socket.emit('room-error',{message:'ID gen failed'});
+    const room = createRoom(roomId);
+    joinRoom(roomId,socket.id,opts.userInfo);
+    socket.join(roomId);
+    socket.roomId = roomId;
+    socket.emit('room-created',{ roomId, userCount:room.users.size, graphState:room.graphState });
+  });
 
-  // Enhanced room creation
-  socket.on('create-room', (options = {}) => {
-    try {
-      let roomId;
-      let attempts = 0;
-      const maxAttempts = 10;
+  socket.on('join-room', ({roomId,userInfo={}})=>{
+    roomId = roomId.toUpperCase().trim();
+    if(!/^[A-Z0-9]{6}$/.test(roomId)) {
+      return socket.emit('room-error',{message:'Invalid ID'});
+    }
+    const room = joinRoom(roomId,socket.id,userInfo);
+    if(!room) return socket.emit('room-error',{message:'Not found'});
+    socket.join(roomId);
+    socket.roomId = roomId;
+    socket.emit('graph-sync',room.graphState);
+    socket.emit('room-joined',{ roomId, userCount:room.users.size, graphState:room.graphState });
+    socket.to(roomId).emit('user-joined',{ userCount:room.users.size, userId:socket.id });
+  });
 
-      do {
-        roomId = generateRoomId();
-        attempts++;
-      } while (rooms.has(roomId) && attempts < maxAttempts);
-
-      if (attempts >= maxAttempts) {
-        socket.emit('room-error', { message: 'Failed to generate unique room ID' });
-        return;
-      }
-
-      const room = createRoom(roomId);
-      joinRoom(roomId, socket.id, options.userInfo);
-      
-      socket.join(roomId);
-      socket.roomId = roomId;
-
-      socket.emit('room-created', {
-        roomId: roomId,
-        userCount: room.users.size,
-        graphState: room.graphState
-      });
-
-      console.log(`🏠 Room ${roomId} created by ${socket.id}`);
-    } catch (error) {
-      console.error('Error creating room:', error);
-      socket.emit('room-error', { message: 'Failed to create room' });
+  socket.on('leave-room', ()=>{
+    const rid = leaveRoom(socket.id);
+    if(rid){
+      socket.leave(rid);
+      socket.roomId=null;
+      const room = rooms.get(rid);
+      if(room) socket.to(rid).emit('user-left',{ userCount:room.users.size, userId:socket.id });
+      socket.emit('room-left',{roomId:rid});
     }
   });
 
-  // Enhanced room joining
-  socket.on('join-room', ({ roomId, userInfo = {} }) => {
-    try {
-      roomId = roomId.toUpperCase().trim();
-      
-      if (!/^[A-Z0-9]{6}$/.test(roomId)) {
-        socket.emit('room-error', { message: 'Invalid room ID format' });
-        return;
-      }
-
-      const room = joinRoom(roomId, socket.id, userInfo);
-      if (!room) {
-        socket.emit('room-error', { message: 'Room not found' });
-        return;
-      }
-
-      socket.join(roomId);
-      socket.roomId = roomId;
-
-      // Send current graph state to new user
-      socket.emit('graph-sync', room.graphState);
-      
-      socket.emit('room-joined', {
-        roomId: roomId,
-        userCount: room.users.size,
-        graphState: room.graphState
-      });
-
-      // Notify other users
-      socket.to(roomId).emit('user-joined', {
-        userCount: room.users.size,
-        userId: socket.id
-      });
-
-      console.log(`🚪 User ${socket.id} joined room ${roomId}`);
-    } catch (error) {
-      console.error('Error joining room:', error);
-      socket.emit('room-error', { message: 'Failed to join room' });
+  socket.on('graph-action', action=>{
+    const rid = socket.roomId;
+    if(!rid) return console.log('No room for action');
+    if(updateRoomState(rid,action)){
+      socket.to(rid).emit('graph-action', {...action, userId:socket.id, timestamp:Date.now() });
     }
   });
 
-  // Enhanced room leaving
-  socket.on('leave-room', () => {
-    try {
-      const roomId = leaveRoom(socket.id);
-      if (roomId) {
-        socket.leave(roomId);
-        socket.roomId = null;
-        
-        const room = rooms.get(roomId);
-        if (room) {
-          socket.to(roomId).emit('user-left', {
-            userCount: room.users.size,
-            userId: socket.id
-          });
-        }
-        
-        socket.emit('room-left', { roomId });
-        console.log(`🚪 User ${socket.id} left room ${roomId}`);
-      }
-    } catch (error) {
-      console.error('Error leaving room:', error);
-    }
-  });
-
-  // Enhanced graph action handling
-  socket.on('graph-action', (action) => {
-    try {
-      const roomId = socket.roomId;
-      if (!roomId) {
-        console.log(`Graph action received but user ${socket.id} not in room`);
-        return;
-      }
-
-      const success = updateRoomState(roomId, action);
-      if (success) {
-        // Broadcast to all other users in the room
-        socket.to(roomId).emit('graph-action', {
-          ...action,
-          userId: socket.id,
-          timestamp: Date.now()
-        });
-        
-        console.log(`🎯 Graph action broadcasted in room ${roomId}: ${action.type}`);
-      }
-    } catch (error) {
-      console.error('Error handling graph action:', error);
-    }
-  });
-
-  // Get room info
-  socket.on('get-room-info', () => {
-    const roomId = socket.roomId;
-    if (roomId && rooms.has(roomId)) {
-      const room = rooms.get(roomId);
-      const users = roomUsers.get(roomId);
-      
-      socket.emit('room-info', {
-        roomId,
+  socket.on('get-room-info', ()=>{
+    const rid = socket.roomId;
+    if(rid && rooms.has(rid)){
+      const room = rooms.get(rid), users = roomUsers.get(rid);
+      socket.emit('room-info',{
+        roomId: rid,
         userCount: room.users.size,
         users: Array.from(users.values()),
         graphState: room.graphState,
@@ -432,285 +215,90 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Enhanced disconnect handling
-  socket.on('disconnect', (reason) => {
-    try {
-      const roomId = leaveRoom(socket.id);
-      if (roomId) {
-        const room = rooms.get(roomId);
-        if (room) {
-          socket.to(roomId).emit('user-left', {
-            userCount: room.users.size,
-            userId: socket.id
-          });
-        }
-        console.log(`👤 User ${socket.id} disconnected from room ${roomId} (${reason})`);
-      } else {
-        console.log(`👤 User ${socket.id} disconnected (${reason})`);
-      }
-    } catch (error) {
-      console.error('Error handling disconnect:', error);
+  socket.on('disconnect', reason=>{
+    const rid = leaveRoom(socket.id);
+    if(rid){
+      const room = rooms.get(rid);
+      if(room) socket.to(rid).emit('user-left',{ userCount:room.users.size, userId:socket.id });
+      console.log(`👤 Disconnected ${socket.id} from ${rid} (${reason})`);
+    } else {
+      console.log(`👤 Disconnected: ${socket.id} (${reason})`);
     }
   });
 
-  // Heartbeat for connection monitoring
-  socket.on('ping', () => {
-    socket.emit('pong');
-  });
+  socket.on('ping', ()=> socket.emit('pong'));
 });
 
-// ========================
-// AI ASSISTANT INTEGRATION
-// ========================
-
+//—— AI Assistant Integration —————————————————————————————————————
 let genAI, model;
-
-if (process.env.GEMINI_API_KEY) {
+if(process.env.GEMINI_API_KEY){
   try {
     genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      systemInstruction: `You are a helpful AI assistant for a Graph Algorithm Visualizer application.
-
-Your role is to:
-1. Help users understand graph algorithms (BFS, DFS, Dijkstra, Kruskal, Prim)
-2. Explain graph theory concepts clearly
-3. Provide guidance on using the visualizer
-4. Answer questions about graph data structures
-5. Help with algorithm complexity analysis
-
-Keep responses concise, educational, and friendly. Use examples when helpful.
-Focus on practical understanding and visualization concepts.`
+      model:"gemini-1.5-flash",
+      systemInstruction: `You are a helpful AI assistant for a Graph Visualizer.`
     });
-    console.log('🤖 AI Assistant initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize AI:', error);
+    console.log('🤖 AI Initialized');
+  } catch(e){
+    console.error('AI init failed:',e);
     model = null;
   }
 } else {
-  console.warn('⚠️ GEMINI_API_KEY not found. AI features will be disabled.');
+  console.warn('⚠️ GEMINI_API_KEY missing, AI disabled');
 }
 
-// Enhanced AI endpoint
-app.post('/api/ask', async (req, res) => {
+app.post('/api/ask', async (req,res)=>{
+  if(!model) return res.status(503).json({error:'AI unavailable'});
+  const {prompt,graph,history} = req.body;
+  if(!prompt) return res.status(400).json({error:'Prompt required'});
+  // Build history array...
+  const chat = model.startChat({generationConfig:{maxOutputTokens:1000,temperature:0.7}});
+  const contextual = `
+Graph: ${graph?.nodes?.length||0} nodes, ${graph?.edges?.length||0} edges
+Q: "${prompt}"
+`;
   try {
-    if (!model) {
-      return res.status(503).json({ 
-        error: 'AI service not available. Please configure GEMINI_API_KEY.' 
-      });
-    }
-
-    const { prompt, graph, history } = req.body;
-    
-    if (!prompt || typeof prompt !== 'string') {
-      return res.status(400).json({ error: 'Valid prompt is required.' });
-    }
-
-    // Enhanced history processing
-    let historyForChat = [];
-    if (history && Array.isArray(history) && history.length > 0) {
-      historyForChat = history.slice(0, -1).map((msg, index) => {
-        let role = msg.role === 'ai' ? 'model' : 'user';
-        let parts = msg.parts;
-        
-        if (typeof parts === 'string') {
-          parts = [{ text: parts }];
-        } else if (Array.isArray(parts)) {
-          parts = parts.map(p => typeof p === 'string' ? { text: p } : p);
-        } else {
-          parts = [{ text: String(parts) }];
-        }
-        
-        return { role, parts };
-      }).filter(msg => msg.parts[0].text.trim().length > 0);
-      
-      // Ensure alternating roles
-      let validHistory = [];
-      let expectedRole = 'user';
-      
-      for (let msg of historyForChat) {
-        if (msg.role === expectedRole) {
-          validHistory.push(msg);
-          expectedRole = expectedRole === 'user' ? 'model' : 'user';
-        }
-      }
-      
-      historyForChat = validHistory;
-    }
-
-    // Enhanced contextual prompt
-    const contextualPrompt = `
-Current Graph Context:
-${graph ? `
-- Graph Type: ${graph.isDirected ? 'Directed' : 'Undirected'}
-- Node Count: ${graph.nodes ? graph.nodes.length : 0}
-- Edge Count: ${graph.edges ? graph.edges.length : 0}
-- Nodes: ${graph.nodes ? graph.nodes.join(', ') : 'None'}
-- Edges: ${graph.edges ? graph.edges.map(e => `${e.from} → ${e.to}${e.weight ? ` (weight: ${e.weight})` : ''}`).join(', ') : 'None'}
-` : '- No graph data available'}
-
-User Question: "${prompt}"
-
-Please provide a helpful, educational response about graph algorithms or the visualizer.`;
-
-    // Start chat with proper configuration
-    const chatConfig = {
-      generationConfig: {
-        maxOutputTokens: 1000,
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.9,
-      }
-    };
-
-    if (historyForChat.length > 0) {
-      chatConfig.history = historyForChat;
-    }
-
-    const chat = model.startChat(chatConfig);
-    const result = await chat.sendMessage(contextualPrompt);
-    
-    res.json({ 
-      response: result.response.text(),
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    console.error('AI Error:', error);
-    
-    // Enhanced error handling
-    let errorMessage = 'Failed to get AI response. Please try again.';
-    
-    if (error.message.includes('API key')) {
-      errorMessage = 'Invalid API key. Please check your configuration.';
-    } else if (error.message.includes('quota')) {
-      errorMessage = 'API quota exceeded. Please try again later.';
-    } else if (error.message.includes('safety')) {
-      errorMessage = 'Content blocked by safety filters. Please rephrase your question.';
-    }
-    
-    res.status(500).json({
-      error: errorMessage,
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    const result = await chat.sendMessage(contextual);
+    res.json({response: result.response.text(), timestamp:new Date().toISOString()});
+  } catch(err){
+    console.error('AI error:', err);
+    res.status(500).json({error:'AI failed', details:err.message});
   }
 });
 
-// ========================
-// ROOM URL ROUTING
-// ========================
-
-app.get('/room/:roomId', (req, res) => {
-  const roomId = req.params.roomId.toUpperCase();
-  
-  if (!/^[A-Z0-9]{6}$/.test(roomId)) {
-    return res.status(400).send('Invalid room ID format');
-  }
-  
-  // Serve the main app with room parameter
-  res.sendFile(path.join(__dirname, 'index.html'));
+//—— Routes & Health —————————————————————————————————————————
+app.get('/room/:roomId', (req,res)=>{
+  const rid = req.params.roomId.toUpperCase();
+  if(!/^[A-Z0-9]{6}$/.test(rid)) return res.status(400).send('Invalid room');
+  res.sendFile(path.join(__dirname,'index.html'));
 });
 
-// ========================
-// API ENDPOINTS
-// ========================
-
-// Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/stats',(req,res)=>{
   res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    rooms: rooms.size,
-    totalUsers: Array.from(rooms.values()).reduce((acc, room) => acc + room.users.size, 0),
-    ai: !!model
+    totalRooms:rooms.size,
+    totalUsers:Array.from(rooms.values()).reduce((a,r)=>a+r.users.size,0)
   });
 });
 
-// Room statistics
-app.get('/api/stats', (req, res) => {
-  const stats = {
-    totalRooms: rooms.size,
-    totalUsers: Array.from(rooms.values()).reduce((acc, room) => acc + room.users.size, 0),
-    roomDetails: Array.from(rooms.entries()).map(([id, room]) => ({
-      id,
-      userCount: room.users.size,
-      nodeCount: room.graphState.nodes.length,
-      edgeCount: room.graphState.edges.length,
-      createdAt: room.metadata.createdAt,
-      version: room.metadata.version
-    }))
-  };
-  
-  res.json(stats);
+app.get('/health',(req,res)=> res.json({
+  status:'healthy', timestamp:new Date(), rooms:rooms.size,
+  totalUsers:Array.from(rooms.values()).reduce((a,r)=>a+r.users.size,0),
+  ai:!!model
+}));
+
+app.get('/', (req,res)=> res.sendFile(path.join(__dirname,'index.html')));
+
+//—— Error Handling ———————————————————————————————————————
+app.use((err,req,res,next)=>{
+  console.error('Server error:',err);
+  res.status(500).json({error:'Internal server error'});
 });
+app.use((req,res)=> res.status(404).json({error:'Not found'}));
 
-// Serve main app
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+//—— Server Startup & Shutdown ——————————————————————————————
+server.listen(port, ()=>{
+  console.log(`🚀 Listening on http://localhost:${port}`);
+  console.log(`🤝 Socket.IO ready, rooms: ${rooms.size}, AI: ${model?'on':'off'}`);
 });
-
-// ========================
-// ERROR HANDLING
-// ========================
-
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({
-    error: 'Internal server error',
-    details: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
-
-// Handle 404s
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not found' });
-});
-
-// ========================
-// SERVER STARTUP
-// ========================
-
-server.listen(port, () => {
-  console.log('🚀 ===============================');
-  console.log(`🚀 Graph Visualizer Server Started`);
-  console.log('🚀 ===============================');
-  console.log(`🔗 Local: http://localhost:${port}`);
-  console.log(`🤝 Real-time collaboration: ${rooms.size} rooms active`);
-  console.log(`🤖 AI Assistant: ${model ? 'Enabled' : 'Disabled'}`);
-  console.log(`📊 Socket.IO: Ready for connections`);
-  console.log('🚀 ===============================');
-});
-
-// ========================
-// GRACEFUL SHUTDOWN
-// ========================
-
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
-
-function gracefulShutdown(signal) {
-  console.log(`\n👋 Received ${signal}. Shutting down gracefully...`);
-  
-  // Close Socket.IO connections
-  io.close(() => {
-    console.log('🔌 Socket.IO connections closed');
-  });
-  
-  // Close HTTP server
-  server.close(() => {
-    console.log('🛑 HTTP server closed');
-    console.log('✅ Shutdown complete');
-    process.exit(0);
-  });
-  
-  // Force close after timeout
-  setTimeout(() => {
-    console.log('⏰ Forcing shutdown...');
-    process.exit(1);
-  }, 10000);
-}
-
-// Export for testing
-module.exports = { app, server, io };
+process.on('SIGTERM',()=>server.close(()=>process.exit(0)));
+process.on('SIGINT', ()=>server.close(()=>process.exit(0)));
