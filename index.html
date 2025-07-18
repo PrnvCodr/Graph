@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithm Visualizer - Interactive Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ai-assistant.css">
+    <link rel="stylesheet" href="collaboration.css">
+    <style>
+        /* Basic styling for the code viewer tabs */
+        .code-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .code-tab-btn {
+            padding: 10px 15px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .code-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--color-text);
+        }
+        .code-tab-btn.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 15px rgba(0, 221, 255, 0.5);
+        }
+        .code-panel {
+            display: none;
+            position: relative;
+        }
+        .code-panel.active {
+            display: block;
+        }
+        .code-panel pre {
+            max-height: 400px;
+            background-color: rgba(0,0,0,0.4);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            padding-top: 50px;
+            overflow: auto;
+            transition: background-color 0.3s ease;
+        }
+        
+        .code-panel pre::-webkit-scrollbar {
+            width: 10px;
+        }
+        .code-panel pre::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .code-panel pre::-webkit-scrollbar-thumb {
+            background-color: var(--color-primary);
+            border-radius: 5px;
+        }
+        .code-panel pre::-webkit-scrollbar-thumb:hover {
+            background-color: #00bfff;
+        }
+
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+
+        .copy-btn:hover {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+
+        .copy-btn.copied {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header glass-panel">
+            <h1 class="app-title gradient-text">Graph Algorithm Visualizer</h1>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                <span class="theme-icon"></span>
+            </button>
+        </header>
+
+
+        <main class="main-content">
+            <aside class="sidebar glass-panel">
+                <div class="sidebar-section">
+                    <h3> Algorithm Learning Center</h3>
+                    <div class="algorithm-info" id="algorithmInfo">
+                        <div class="info-card">
+                            <h4> Select an Algorithm to Learn</h4>
+                            <p>Choose from the dropdown below to explore detailed information about each algorithm including complexity analysis, advantages, disadvantages, and real-world applications.</p>
+                            
+                            <div style="margin: 16px 0; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                                <h5 style="color: #00DDFF; margin-bottom: 8px;"> Available Algorithms:</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+                                    <li style="padding: 4px 0;"> <strong>BFS</strong> - Breadth-First Search</li>
+                                    <li style="padding: 4px 0;"> <strong>DFS</strong> - Depth-First Search</li>
+                                    <li style="padding: 4px 0;"> <strong>Dijkstra</strong> - Shortest Path Algorithm</li>
+                                    <li style="padding: 4px 0;"> <strong>Kruskal</strong> - Minimum Spanning Tree</li>
+                                    <li style="padding: 4px 0;"> <strong>Prim</strong> - Minimum Spanning Tree</li>
+                                </ul>
+                            </div>
+
+
+                            <div style="margin: 16px 0; padding: 12px; background: rgba(50,205,50,0.1); border-radius: 8px; border-left: 3px solid #32CD32;">
+                                <h5 style="color: #32CD32; margin-bottom: 8px;"> What You'll Learn:</h5>
+                                <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px;">
+                                    <li style="padding: 2px 0;"> Time & Space Complexity Analysis</li>
+                                    <li style="padding: 2px 0;"> Advantages & Use Cases</li>
+                                    <li style="padding: 2px 0;"> Limitations & Disadvantages</li>
+                                    <li style="padding: 2px 0;"> Real-world Applications</li>
+                                    <li style="padding: 2px 0;"> Common Pitfalls to Avoid</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Performance Overview</h3>
+                    <div style="background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <h5 style="color: #FF1D58; margin-bottom: 8px;"> Speed Comparison</h5>
+                        <div style="font-size: 11px; line-height: 1.4;">
+                            <div style="margin: 4px 0;"><strong>Fastest:</strong> DFS for deep graphs</div>
+                            <div style="margin: 4px 0;"><strong>Memory Efficient:</strong> DFS (O(h) space)</div>
+                            <div style="margin: 4px 0;"><strong>Optimal Paths:</strong> BFS (unweighted), Dijkstra (weighted)</div>
+                            <div style="margin: 4px 0;"><strong>MST:</strong> Kruskal (sparse), Prim (dense)</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px;">
+                        <h5 style="color: #8458B3; margin-bottom: 8px;"> Memory Usage</h5>
+                        <div style="font-size: 11px; line-height: 1.4;">
+                            <div style="margin: 4px 0;"><strong>Low:</strong> DFS - O(h) where h = height</div>
+                            <div style="margin: 4px 0;"><strong>Medium:</strong> Dijkstra, Prim - O(V)</div>
+                            <div style="margin: 4px 0;"><strong>High:</strong> BFS - O(V) in worst case</div>
+                            <div style="margin: 4px 0;"><strong>Variable:</strong> Kruskal - depends on implementation</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Complexity Quick Reference</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10px; background: rgba(255,255,255,0.05);">
+                            <thead>
+                                <tr style="background: rgba(255,255,255,0.1);">
+                                    <th style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">Algorithm</th>
+                                    <th style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">Time</th>
+                                    <th style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">Space</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold;">BFS</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V+E)</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold;">DFS</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V+E)</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(h)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold;">Dijkstra</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(E log V)</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold;">Kruskal</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(E log E)</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold;">Prim</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(E log V)</td>
+                                    <td style="padding: 6px; border: 1px solid rgba(255,255,255,0.2);">O(V)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 10px; color: rgba(255,255,255,0.7);">
+                        V = vertices, E = edges, h = height
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Real-World Applications</h3>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="background: rgba(0,221,255,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #00DDFF;">
+                            <strong style="color: #00DDFF; font-size: 12px;"> BFS</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">Social networks, GPS navigation, web crawling</div>
+                        </div>
+                        <div style="background: rgba(89,206,143,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #59CE8F;">
+                            <strong style="color: #59CE8F; font-size: 12px;"> DFS</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">Maze solving, topological sorting, cycle detection</div>
+                        </div>
+                        <div style="background: rgba(255,29,88,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #FF1D58;">
+                            <strong style="color: #FF1D58; font-size: 12px;"> Dijkstra</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">GPS routing, network protocols, flight paths</div>
+                        </div>
+                        <div style="background: rgba(132,88,179,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #8458B3;">
+                            <strong style="color: #8458B3; font-size: 12px;"> MST Algorithms</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">Network design, clustering, circuit design</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Important Notes</h3>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="background: rgba(255,193,7,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #FFC107;">
+                            <strong style="color: #FFC107; font-size: 11px;"> Performance Tip</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">Use BFS for shortest paths in unweighted graphs, DFS for memory-constrained environments</div>
+                        </div>
+                        <div style="background: rgba(220,53,69,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #DC3545;">
+                            <strong style="color: #DC3545; font-size: 11px;"> Common Pitfall</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">Dijkstra cannot handle negative weights - use Bellman-Ford instead</div>
+                        </div>
+                        <div style="background: rgba(23,162,184,0.1); padding: 8px; border-radius: 6px; border-left: 3px solid #17A2B8;">
+                            <strong style="color: #17A2B8; font-size: 11px;"> Implementation Note</strong>
+                            <div style="font-size: 10px; margin-top: 4px;">MST algorithms require connected graphs to work properly</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Graph Creation</h3>
+                    <div class="button-group">
+                        <button class="btn btn--primary" id="addNodeBtn">
+                            <span class="btn-icon"></span>Add Node
+                        </button>
+                        <button class="btn btn--primary" id="addEdgeBtn">
+                            <span class="btn-icon"></span>Add Edge
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="nodeNameInput">Node Name:</label>
+                        <input type="text" id="nodeNameInput" class="form-control" placeholder="Enter node name">
+                        <button class="btn btn--outline btn--full-width mt-8" id="addNodeManual">Add Node Manually</button>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="fromNodeInput">From Node:</label>
+                        <input type="text" id="fromNodeInput" class="form-control" placeholder="Source node name">
+                        
+                        <label class="form-label" for="toNodeInput">To Node:</label>
+                        <input type="text" id="toNodeInput" class="form-control" placeholder="Target node name">
+                        
+                        <label class="form-label" for="edgeWeightInput">Weight:</label>
+                        <input type="number" id="edgeWeightInput" class="form-control" placeholder="Edge weight" value="1">
+                        
+                        <button class="btn btn--outline btn--full-width mt-8" id="addEdgeManual">Add Edge Manually</button>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Graph Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label" for="graphType">Graph Type:</label>
+                        <select id="graphType" class="form-control">
+                            <option value="undirected">Undirected</option>
+                            <option value="directed">Directed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="weightedGraph"> Weighted Graph
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Algorithm Selection</h3>
+                    <div class="form-group">
+                        <label class="form-label" for="algorithmSelect">Choose Algorithm:</label>
+                        <select id="algorithmSelect" class="form-control">
+                            <option value="">Select Algorithm</option>
+                            <option value="BFS">Breadth-First Search (BFS)</option>
+                            <option value="DFS">Depth-First Search (DFS)</option>
+                            <option value="Dijkstra">Dijkstra's Shortest Path</option>
+                            <option value="Kruskal">Kruskal's MST</option>
+                            <option value="Prim">Prim's MST</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="startNodeSelect">Start Node:</label>
+                        <select id="startNodeSelect" class="form-control">
+                            <option value="">Select start node</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn--secondary btn--full-width" id="runAlgorithmBtn">
+                        <span class="btn-icon"></span>Run Algorithm
+                    </button>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Animation Controls</h3>
+                    <div class="button-group">
+                        <button class="btn btn--outline" id="playPauseBtn">
+                            <span class="btn-icon"></span>Play
+                        </button>
+                        <button class="btn btn--outline" id="stepBtn">
+                            <span class="btn-icon"></span>Step
+                        </button>
+                        <button class="btn btn--outline" id="resetBtn">
+                            <span class="btn-icon"></span>Reset
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="speedSlider">Animation Speed: <span id="speedLabel">500ms</span></label>
+                        <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="500" step="100">
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section collaboration-section">
+                    <h3> Collaboration</h3>
+                    <div class="collaboration-status">
+                        <div class="status-indicator disconnected" id="connection-status">
+                            Connecting...
+                        </div>
+                        <div class="user-count" id="user-count">
+                            0 users online
+                        </div>
+                    </div>
+                    
+                    <div class="collaboration-controls">
+                        <button class="btn btn--secondary" id="create-room-btn">
+                            <span class="btn-icon"></span>Create Room
+                        </button>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="room-id-input">Room ID:</label>
+                            <input type="text" id="room-id-input" class="form-control" placeholder="Enter 6-character room ID" maxlength="6">
+                        </div>
+                        
+                        <button class="btn btn--outline" id="join-room-btn">
+                            <span class="btn-icon"></span>Join Room
+                        </button>
+                        
+                        <button class="btn btn--outline" id="leave-room-btn">
+                            <span class="btn-icon"></span>Leave Room
+                        </button>
+                    </div>
+                    
+                    <div class="room-details" id="room-details" style="display: none;">
+                        <h4>Room Details</h4>
+                        <div class="room-id-copy">
+                            <span id="current-room-id">ABCDEF</span>
+                            <button class="btn-copy" id="copy-room-id" title="Copy Room ID">
+                                
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3> Graph Actions</h3>
+                    <button class="btn btn--outline btn--full-width" id="clearGraphBtn">
+                        <span class="btn-icon"></span>Clear Graph
+                    </button>
+                </div>
+            </aside>
+
+
+            <div class="canvas-container">
+                <canvas id="graphCanvas" class="graph-canvas"></canvas>
+                <div class="canvas-overlay" id="canvasOverlay"></div>
+            </div>
+        </main>
+
+
+        <div class="code-viewer-container glass-panel" style="margin: 0 16px 16px; padding: 24px;">
+            <h2 style="margin-bottom: 20px;"> C++ Code Snippets</h2>
+            <div class="code-tabs">
+                <button class="code-tab-btn active" data-target="bfs-code">BFS</button>
+                <button class="code-tab-btn" data-target="dfs-code">DFS</button>
+                <button class="code-tab-btn" data-target="dijkstra-code">Dijkstra</button>
+                <button class="code-tab-btn" data-target="kruskal-code">Kruskal</button>
+                <button class="code-tab-btn" data-target="prim-code">Prim</button>
+            </div>
+            
+            <div id="bfs-code" class="code-panel active">
+                <button class="copy-btn">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;list&gt;
+
+
+using namespace std;
+
+
+class Graph {
+    int V;
+    list&lt;int&gt; *adj;
+public:
+    Graph(int V) {
+        this-&gt;V = V;
+        adj = new list&lt;int&gt;[V];
+    }
+    void addEdge(int v, int w) {
+        adj[v].push_back(w);
+    }
+    void BFS(int s) {
+        vector&lt;bool&gt; visited(V, false);
+        queue&lt;int&gt; q;
+        
+        visited[s] = true;
+        q.push(s);
+        
+        while(!q.empty()) {
+            s = q.front();
+            cout &lt;&lt; s &lt;&lt; " ";
+            q.pop();
+            
+            for (auto i : adj[s]) {
+                if (!visited[i]) {
+                    visited[i] = true;
+                    q.push(i);
+                }
+            }
+        }
+    }
+};</code></pre>
+            </div>
+
+
+            <div id="dfs-code" class="code-panel">
+                <button class="copy-btn">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+
+
+using namespace std;
+
+
+class Graph {
+    int V;
+    list&lt;int&gt; *adj;
+    void DFSUtil(int v, vector&lt;bool&gt;&amp; visited) {
+        visited[v] = true;
+        cout &lt;&lt; v &lt;&lt; " ";
+
+
+        for (auto i : adj[v]) {
+            if (!visited[i]) {
+                DFSUtil(i, visited);
+            }
+        }
+    }
+public:
+    Graph(int V) {
+        this-&gt;V = V;
+        adj = new list&lt;int&gt;[V];
+    }
+    void addEdge(int v, int w) {
+        adj[v].push_back(w);
+    }
+    void DFS(int s) {
+        vector&lt;bool&gt; visited(V, false);
+        DFSUtil(s, visited);
+    }
+};</code></pre>
+            </div>
+
+
+            <div id="dijkstra-code" class="code-panel">
+                <button class="copy-btn">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;list&gt;
+#include &lt;climits&gt;
+
+
+using namespace std;
+using iPair = pair&lt;int, int&gt;;
+
+
+class Graph {
+    int V;
+    list&lt;iPair&gt; *adj;
+public:
+    Graph(int V) {
+        this-&gt;V = V;
+        adj = new list&lt;iPair&gt;[V];
+    }
+    void addEdge(int u, int v, int w) {
+        adj[u].push_back(make_pair(v, w));
+        adj[v].push_back(make_pair(u, w));
+    }
+    void shortestPath(int src) {
+        priority_queue&lt;iPair, vector&lt;iPair&gt;, greater&lt;iPair&gt;&gt; pq;
+        vector&lt;int&gt; dist(V, INT_MAX);
+
+
+        pq.push(make_pair(0, src));
+        dist[src] = 0;
+
+
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
+
+
+            for (auto const&amp; [v, weight] : adj[u]) {
+                if (dist[v] > dist[u] + weight) {
+                    dist[v] = dist[u] + weight;
+                    pq.push(make_pair(dist[v], v));
+                }
+            }
+        }
+
+
+        for (int i = 0; i &lt; V; ++i)
+            cout &lt;&lt; i &lt;&lt; "\t\t" &lt;&lt; dist[i] &lt;&lt; endl;
+    }
+};</code></pre>
+            </div>
+
+
+            <div id="kruskal-code" class="code-panel">
+                <button class="copy-btn">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+
+using namespace std;
+
+
+struct Edge {
+    int src, dest, weight;
+};
+
+
+struct DSU {
+    vector&lt;int&gt; parent;
+    DSU(int n) {
+        parent.resize(n);
+        for(int i = 0; i &lt; n; i++) parent[i] = i;
+    }
+    int find(int i) {
+        if (parent[i] == i) return i;
+        return parent[i] = find(parent[i]);
+    }
+    void unite(int i, int j) {
+        int root_i = find(i);
+        int root_j = find(j);
+        if (root_i != root_j) {
+            parent[root_i] = root_j;
+        }
+    }
+};
+
+
+bool compareEdges(const Edge&amp; a, const Edge&amp; b) {
+    return a.weight &lt; b.weight;
+}
+
+
+void kruskalMST(int V, vector&lt;Edge&gt;&amp; edges) {
+    sort(edges.begin(), edges.end(), compareEdges);
+    DSU dsu(V);
+    vector&lt;Edge&gt; result;
+    for (const auto&amp; edge : edges) {
+        if (dsu.find(edge.src) != dsu.find(edge.dest)) {
+            result.push_back(edge);
+            dsu.unite(edge.src, edge.dest);
+        }
+    }
+    for (const auto&amp; edge : result) {
+        cout &lt;&lt; edge.src &lt;&lt; " - " &lt;&lt; edge.dest &lt;&lt; " : " &lt;&lt; edge.weight &lt;&lt; endl;
+    }
+}</code></pre>
+            </div>
+            
+            <div id="prim-code" class="code-panel">
+                <button class="copy-btn">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;climits&gt;
+
+
+using namespace std;
+using iPair = pair&lt;int, int&gt;;
+
+
+class Graph {
+    int V;
+    vector&lt;iPair&gt; *adj;
+public:
+    Graph(int V) {
+        this-&gt;V = V;
+        adj = new vector&lt;iPair&gt;[V];
+    }
+    void addEdge(int u, int v, int w) {
+        adj[u].push_back(make_pair(v, w));
+        adj[v].push_back(make_pair(u, w));
+    }
+    void primMST() {
+        priority_queue&lt;iPair, vector&lt;iPair&gt;, greater&lt;iPair&gt;&gt; pq;
+        int src = 0;
+        vector&lt;int&gt; key(V, INT_MAX);
+        vector&lt;int&gt; parent(V, -1);
+        vector&lt;bool&gt; inMST(V, false);
+
+
+        pq.push(make_pair(0, src));
+        key[src] = 0;
+
+
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
+
+
+            if(inMST[u] == true){
+                continue;
+            }
+            inMST[u] = true;
+
+
+            for (auto const&amp; [v, weight] : adj[u]) {
+                if (inMST[v] == false &amp;&amp; key[v] > weight) {
+                    key[v] = weight;
+                    pq.push(make_pair(key[v], v));
+                    parent[v] = u;
+                }
+            }
+        }
+
+
+        for (int i = 1; i &lt; V; ++i)
+            cout &lt;&lt; parent[i] &lt;&lt; " - " &lt;&lt; i &lt;&lt; endl;
+    }
+};</code></pre>
+            </div>
+        </div>
+
+
+        <footer class="status-bar glass-panel">
+            <div class="status-info">
+                <span class="status-item">Nodes: <strong id="nodeCount">0</strong></span>
+                <span class="status-item">Edges: <strong id="edgeCount">0</strong></span>
+                <span class="status-item">Mode: <strong id="currentMode">Normal</strong></span>
+            </div>
+            <div class="algorithm-status" id="algorithmStatus">Ready to visualize algorithms</div>
+        </footer>
+
+
+        <div id="contextMenu" class="context-menu glass-panel">
+            <div class="context-menu-item" id="contextAddNode">Add Node Here</div>
+            <div class="context-menu-item" id="contextConnectNode">Connect to Node</div>
+            <div class="context-menu-item" id="contextRenameNode">Rename Node</div>
+            <div class="context-menu-item" id="contextDeleteNode">Delete Node</div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.code-tab-btn');
+            const panels = document.querySelectorAll('.code-panel');
+
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+
+
+                    tab.classList.add('active');
+                    const targetPanel = document.getElementById(tab.dataset.target);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                    }
+                });
+            });
+
+
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const codePanel = button.parentElement;
+                    const codeToCopy = codePanel.querySelector('pre code').innerText;
+
+
+                    navigator.clipboard.writeText(codeToCopy).then(() => {
+                        button.innerText = 'Copied!';
+                        button.classList.add('copied');
+                        
+                        setTimeout(() => {
+                            button.innerText = 'Copy';
+                            button.classList.remove('copied');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        button.innerText = 'Failed!';
+                        setTimeout(() => {
+                            button.innerText = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    <script src="app.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="collaboration-manager.js"></script>
+    
+    <div class="gva-ai-assistant-sidebar" id="ai-sidebar">
+        <div class="gva-sidebar-header">
+            <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect x="4" y="12" width="16" height="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 12V8h-5l-1 4h6V8Z"/></svg>
+                AI Assistant
+            </h3>
+            <div class="gva-header-buttons">
+                <button class="gva-sidebar-clear-btn" id="clear-chat-btn" title="Clear Chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                </button>
+                <button class="gva-sidebar-toggle-btn" id="toggle-sidebar-btn" title="Collapse Sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="gva-chat-history" id="chat-history">
+            <div class="gva-chat-message gva-ai-message">
+                <div class="gva-avatar">AI</div>
+                <div class="gva-message-content">
+                    <p>Hello! I'm your AI Assistant. I can help you with graph algorithms, explain concepts, and guide you through visualizations. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="gva-chat-input-area">
+            <div class="gva-chat-input-wrapper">
+                <textarea class="gva-chat-input" id="chat-input" placeholder="Ask AI..." rows="1"></textarea>
+                <button class="gva-send-btn" id="send-btn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <button class="gva-floating-toggle" id="floating-toggle-btn" title="Open AI Assistant">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M15 3v18"/></svg>
+    </button>
+    
+    <script src="ai-assistant.js"></script>
+    <script src="mouse-tracer.js"></script>
+    <script>
+        // Initialize collaboration manager after graph visualizer is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.graphVisualizer && window.CollaborationManager) {
+                    window.collaborationManager = new CollaborationManager(window.graphVisualizer);
+                }
+                if (typeof initializeAIAssistant === 'function') {
+                    initializeAIAssistant();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+/* ---------------------------------- */
+/* AI Assistant Sidebar Styles        */
+/* ---------------------------------- */
+
+/* Using a unique prefix 'gva-' to prevent any CSS conflicts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --gva-font-family: 'Inter', sans-serif;
+    --gva-sidebar-width: 360px;
+    
+    /* New Futurist Dark Theme Palette */
+    --gva-bg: rgba(10, 25, 47, 0.85); /* Dark navy blue */
+    --gva-border: rgba(13, 37, 69, 1);
+    --gva-surface: rgba(22, 43, 72, 0.9);
+    --gva-text: #e6f1ff; /* Light blueish white */
+    --gva-text-muted: #8899a6; /* Muted blue-gray */
+    --gva-accent-glow: rgba(56, 189, 248, 0.5); /* Sky blue for glows */
+    --gva-user-msg-bg: #1e3a5f;
+    --gva-ai-msg-bg: #152a47;
+    --gva-input-bg: rgba(10, 25, 47, 0.9);
+    --gva-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+    --gva-radius: 16px;
+    --gva-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gva-ai-assistant-sidebar {
+    position: fixed;
+    top: 88px; /* Align with main content */
+    right: 16px;
+    width: var(--gva-sidebar-width);
+    height: calc(100vh - 160px); /* Align with main content */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--gva-radius);
+    box-shadow: var(--gva-shadow);
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    font-family: var(--gva-font-family);
+    background-color: var(--gva-bg);
+    border: 1px solid var(--gva-border);
+    color: var(--gva-text);
+}
+
+.gva-ai-assistant-sidebar.gva-collapsed {
+    transform: translateX(calc(100% + 32px));
+}
+
+.gva-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gva-border);
+    flex-shrink: 0;
+}
+
+.gva-sidebar-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--gva-text);
+    text-shadow: 0 0 8px var(--gva-accent-glow);
+}
+
+.gva-sidebar-toggle-btn, .gva-sidebar-clear-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--gva-transition);
+}
+
+.gva-sidebar-toggle-btn:hover, .gva-sidebar-clear-btn:hover {
+    background-color: rgba(56, 189, 248, 0.1);
+    transform: scale(1.1);
+}
+
+.gva-sidebar-toggle-btn svg, .gva-sidebar-clear-btn svg {
+    width: 20px;
+    height: 20px;
+    color: var(--gva-text-muted);
+}
+
+.gva-chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Custom scrollbar */
+.gva-chat-history::-webkit-scrollbar {
+    width: 8px;
+}
+.gva-chat-history::-webkit-scrollbar-track {
+    background: transparent;
+}
+.gva-chat-history::-webkit-scrollbar-thumb {
+    background-color: #1e3a5f;
+    border-radius: 4px;
+}
+.gva-chat-history::-webkit-scrollbar-thumb:hover {
+    background-color: #2b5282;
+}
+
+
+.gva-chat-message {
+    display: flex;
+    gap: 12px;
+    max-width: 90%;
+    animation: gva-fade-in 0.5s ease-out;
+}
+
+@keyframes gva-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.gva-chat-message .gva-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.gva-message-content {
+    padding: 12px 16px;
+    border-radius: var(--gva-radius);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.gva-message-content p {
+    margin: 0 0 8px 0;
+}
+.gva-message-content p:last-child {
+    margin-bottom: 0;
+}
+.gva-message-content strong {
+    color: #90cdf4; /* Light blue for bold text */
+}
+
+.gva-message-content code {
+    font-family: var(--gva-font-family);
+    background-color: rgba(56, 189, 248, 0.1);
+    color: #90cdf4;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+
+/* User message */
+.gva-chat-message.gva-user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.gva-user-message .gva-avatar {
+    background: linear-gradient(135deg, #4c51bf, #6b46c1); /* Indigo to Purple */
+    color: white;
+}
+
+.gva-user-message .gva-message-content {
+    background-color: var(--gva-user-msg-bg);
+}
+
+
+/* AI message */
+.gva-chat-message.gva-ai-message {
+    align-self: flex-start;
+}
+
+.gva-ai-message .gva-avatar {
+    background: linear-gradient(135deg, #00A3A3, #00DDFF); /* Teal to Cyan */
+    color: white;
+}
+
+.gva-ai-message .gva-message-content {
+    background-color: var(--gva-ai-msg-bg);
+}
+
+/* Typing indicator */
+.gva-typing-indicator .gva-message-content {
+    padding: 16px;
+}
+.gva-typing-indicator span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--gva-text-muted);
+    animation: gva-typing-bounce 1.4s infinite ease-in-out both;
+}
+
+.gva-typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.gva-typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes gva-typing-bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+
+.gva-chat-input-area {
+    padding: 16px;
+    border-top: 1px solid var(--gva-border);
+    flex-shrink: 0;
+    background-color: var(--gva-bg);
+}
+
+.gva-chat-input-wrapper {
+    position: relative;
+    border-radius: 999px; /* Pill shape */
+    padding: 2px; /* Space for the gradient border */
+    background: linear-gradient(90deg, #00A3A3, #00DDFF, #8458B3);
+    transition: var(--gva-transition);
+}
+
+.gva-chat-input-wrapper:focus-within {
+    box-shadow: 0 0 15px var(--gva-accent-glow);
+}
+
+.gva-chat-input {
+    width: 100%;
+    padding: 14px 52px 14px 24px; /* Increased left padding */
+    border-radius: 999px; /* Pill shape */
+    border: none;
+    background-color: var(--gva-input-bg);
+    font-size: 15px;
+    color: var(--gva-text);
+    transition: var(--gva-transition);
+    resize: none;
+    font-family: var(--gva-font-family);
+    line-height: 1.5;
+}
+
+.gva-chat-input:focus {
+    outline: none;
+}
+.gva-chat-input::placeholder {
+    color: var(--gva-text-muted);
+}
+
+.gva-send-btn {
+    position: absolute;
+    right: 8px; /* Adjusted position */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px; /* Slightly larger */
+    height: 40px; /* Slightly larger */
+    border-radius: 50%; /* Perfect circle */
+    background: linear-gradient(135deg, #00A3A3, #00DDFF);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-out;
+    box-shadow: 0 4px 10px rgba(0, 191, 255, 0.2);
+}
+
+.gva-send-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 7px 15px rgba(0, 191, 255, 0.3);
+}
+
+.gva-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: translateY(-50%);
+    box-shadow: none;
+}
+
+.gva-send-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Floating Toggle Button */
+.gva-floating-toggle {
+    position: fixed;
+    top: 92px;
+    right: 16px;
+    z-index: 1001;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--gva-shadow);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: translateX(0) scale(0);
+    opacity: 0;
+    background: linear-gradient(135deg, #00A3A3, #00DDFF);
+    color: white;
+}
+
+.gva-floating-toggle.gva-visible {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+.gva-floating-toggle:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 20px var(--gva-accent-glow);
+}
+
+.gva-floating-toggle svg {
+    width: 24px;
+    height: 24px;
+}
