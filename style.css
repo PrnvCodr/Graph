@@ -712,7 +712,7 @@ h3 {
   border-color: rgba(255,150,255,0.7);
 }
 
-/* Enhanced Form Controls with Dark Dropdown */
+/* FIXED DROPDOWN STYLING - Enhanced Form Controls with Dark Dropdown */
 .form-control select,
 .form-control input[type="text"],
 .form-control input[type="number"] {
@@ -722,16 +722,19 @@ h3 {
   font-size: 15px;
   font-weight: 600;
   color: var(--color-text-main);
-  background: rgba(0,0,0,.85) !important;
+  background: rgba(15, 15, 35, 0.95) !important; /* Darker background */
   border: 2px solid var(--color-border-glass);
   border-radius: 20px;
   backdrop-filter: blur(15px);
   transition: var(--transition-fast);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .form-control select:hover,
 .form-control input:hover {
-  background: rgba(0,0,0,.9) !important;
+  background: rgba(10, 10, 30, 0.98) !important;
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 0 0 4px rgba(200,120,255,0.2), var(--color-shadow);
 }
@@ -741,32 +744,103 @@ h3 {
   outline: none;
   border-color: rgba(255,150,255,0.9);
   box-shadow: 0 0 0 6px rgba(200,120,255,0.3), var(--color-shadow-hover);
+  background: rgba(5, 5, 25, 0.98) !important;
+}
+
+/* COMPLETELY FIXED DROPDOWN OPTIONS */
+.form-control select option {
+  background: rgba(15, 15, 35, 0.98) !important;
+  color: #ffffff !important;
+  padding: 16px 20px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  margin: 2px 0 !important;
+}
+
+.form-control select option:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.8), rgba(156, 39, 176, 0.8)) !important;
+  color: #ffffff !important;
+}
+
+.form-control select option:checked,
+.form-control select option:selected {
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.9), rgba(103, 58, 183, 0.9)) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Dark mode dropdown options */
+[data-color-scheme="dark"] .form-control select option {
+  background: rgba(10, 10, 25, 0.98) !important;
+  color: #e6f1ff !important;
+}
+
+[data-color-scheme="dark"] .form-control select option:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.8), rgba(138, 43, 226, 0.8)) !important;
+  color: #ffffff !important;
+}
+
+[data-color-scheme="dark"] .form-control select option:checked,
+[data-color-scheme="dark"] .form-control select option:selected {
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.9), rgba(138, 43, 226, 0.9)) !important;
+  color: #000000 !important;
+}
+
+/* Custom dropdown arrow */
+.form-control select {
+  background-image: 
+    linear-gradient(45deg, transparent 40%, var(--color-text-main) 40%, var(--color-text-main) 60%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, var(--color-text-main) 40%, var(--color-text-main) 60%, transparent 60%);
+  background-position: 
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 16px) calc(50% - 2px);
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+  padding-right: 50px;
 }
 
 /* Ensure dropdown fits sidebar */
 .sidebar .form-control select {
   width: 100%;
-  max-width: 90%;
+  max-width: 100%;
 }
 
-/* Dark dropdown options for all modes */
-.form-control select option {
-  background: rgba(0,0,0,.95) !important;
-  color: #ffffff !important;
-  padding: 12px 20px;
-  font-weight: 600;
-  border: none;
+/* Enhanced dropdown focus ring */
+.form-control select:focus {
+  box-shadow: 
+    0 0 0 3px rgba(255, 107, 53, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.form-control select option:hover {
-  background: linear-gradient(135deg, #32cd32, #00ced1) !important;
-  color: #ffffff !important;
+[data-color-scheme="dark"] .form-control select:focus {
+  box-shadow: 
+    0 0 0 3px rgba(0, 255, 127, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.form-control select option:checked {
-  background: linear-gradient(135deg, #ffa500, #2d1b69) !important;
-  color: #ffffff !important;
-  font-weight: 600;
+/* Dropdown animation */
+.form-control select {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.form-control select:focus {
+  transform: translateY(-1px) scale(1.01);
+}
+
+/* Better dropdown styling for all browsers */
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+  .form-control select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  .form-control select::-ms-expand {
+    display: none;
+  }
 }
 
 /* Enhanced Checkbox */
@@ -1133,11 +1207,6 @@ h3 {
 /* ✨ ENHANCED MICRO-INTERACTIONS & VISUAL EFFECTS ✨ */
 
 /* Enhanced Button Ripple Effect */
-.btn {
-  position: relative;
-  overflow: hidden;
-}
-
 .btn::after {
   content: '';
   position: absolute;
@@ -1150,6 +1219,7 @@ h3 {
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
   pointer-events: none;
+  z-index: 1;
 }
 
 .btn:active::after {
@@ -1176,6 +1246,7 @@ h3 {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease;
+  z-index: 1;
 }
 
 .card:hover::after {
@@ -1188,11 +1259,6 @@ h3 {
 }
 
 /* Enhanced Typography Animation */
-.app-title {
-  position: relative;
-  overflow: hidden;
-}
-
 .app-title::before {
   content: '';
   position: absolute;
@@ -1202,6 +1268,7 @@ h3 {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shine 3s infinite;
+  z-index: 1;
 }
 
 @keyframes shine {
@@ -1210,11 +1277,6 @@ h3 {
 }
 
 /* Typewriter effect for headings */
-.sidebar-section h3 {
-  position: relative;
-  overflow: hidden;
-}
-
 .sidebar-section h3::before {
   content: '';
   position: absolute;
@@ -1224,6 +1286,7 @@ h3 {
   height: 100%;
   background: var(--color-primary);
   animation: typing-cursor 1s infinite;
+  z-index: 1;
 }
 
 @keyframes typing-cursor {
@@ -1232,10 +1295,6 @@ h3 {
 }
 
 /* Enhanced Form Control Magic */
-.form-control {
-  position: relative;
-}
-
 .form-control::before {
   content: '';
   position: absolute;
@@ -1248,6 +1307,7 @@ h3 {
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  z-index: -1;
 }
 
 .form-control:hover::before {
@@ -1261,10 +1321,6 @@ h3 {
 }
 
 /* Enhanced Sidebar Glow */
-.sidebar {
-  position: relative;
-}
-
 .sidebar::after {
   content: '';
   position: absolute;
@@ -1321,11 +1377,6 @@ h3 {
 }
 
 /* Canvas Enhancement Effects */
-.canvas-container {
-  position: relative;
-  overflow: hidden;
-}
-
 .canvas-container::before {
   content: '';
   position: absolute;
@@ -1339,6 +1390,7 @@ h3 {
   animation: canvas-ambient 8s ease-in-out infinite alternate;
   pointer-events: none;
   opacity: 0.5;
+  z-index: 1;
 }
 
 @keyframes canvas-ambient {
@@ -1358,11 +1410,6 @@ h3 {
 }
 
 /* Enhanced Focus Indicators */
-*:focus-visible {
-  outline: none;
-  position: relative;
-}
-
 *:focus-visible::after {
   content: '';
   position: absolute;
@@ -1371,6 +1418,7 @@ h3 {
   border-radius: inherit;
   animation: focus-pulse 1.5s ease-in-out infinite;
   pointer-events: none;
+  z-index: 10;
 }
 
 @keyframes focus-pulse {
