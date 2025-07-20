@@ -95,6 +95,20 @@
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Enhanced Design Tokens */
+  --color-bg-glass: rgba(22, 43, 72, 0.38);
+  --color-border-glass: rgba(200, 120, 255, 0.35);
+  --color-shadow: 0 25px 50px -12px rgba(130, 60, 200, 0.40);
+  --color-shadow-hover: 0 35px 70px -14px rgba(160, 80, 255, 0.50);
+  --color-text-main: #e6f1ff;
+  --color-text-muted: #8899a6;
+  --color-gradient-1: #ff6ec7;
+  --color-gradient-2: #bf9aea;
+  --color-gradient-3: #8ec5ff;
+  --transition-snappy: cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-fast: 0.3s var(--transition-snappy);
+  --transition-slow: 0.6s var(--transition-snappy);
 }
 
 /* Dark Mode */
@@ -117,6 +131,10 @@
     --color-focus-ring: rgba(0, 255, 127, 0.4);
     --shadow-glow: 0 0 20px rgba(0, 255, 127, 0.5);
     --shadow-glow-hover: 0 0 30px rgba(0, 255, 127, 0.7);
+    --color-bg-glass: rgba(10, 25, 47, 0.50);
+    --color-border-glass: rgba(180, 100, 235, 0.45);
+    --color-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+    --color-shadow-hover: 0 35px 70px -14px rgba(0, 0, 0, 0.75);
   }
 }
 
@@ -138,6 +156,10 @@
   --color-focus-ring: rgba(0, 255, 127, 0.4);
   --shadow-glow: 0 0 20px rgba(0, 255, 127, 0.5);
   --shadow-glow-hover: 0 0 30px rgba(0, 255, 127, 0.7);
+  --color-bg-glass: rgba(10, 25, 47, 0.50);
+  --color-border-glass: rgba(180, 100, 235, 0.45);
+  --color-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+  --color-shadow-hover: 0 35px 70px -14px rgba(0, 0, 0, 0.75);
 }
 
 [data-color-scheme="light"] {
@@ -159,6 +181,9 @@
   --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.5);
   --shadow-glow-hover: 0 0 30px rgba(255, 107, 53, 0.7);
 }
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Mouse Tracer Effect */
 .mouse-tracer {
@@ -417,6 +442,7 @@ h3 {
   border-radius: var(--radius-base);
   backdrop-filter: var(--glass-blur);
   transition: all var(--duration-normal) var(--ease-standard);
+  max-width: 100%;
 }
 
 .form-control:focus {
@@ -430,6 +456,17 @@ h3 {
 .form-control::placeholder {
   color: var(--color-text-secondary);
   opacity: 0.7;
+}
+
+/* Enhanced Form Labels */
+.form-label {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: block;
+  background: linear-gradient(135deg,#ff9a9e,#fecfef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Enhanced Cards */
@@ -534,49 +571,131 @@ h3 {
   height: calc(100vh - 200px);
 }
 
-/* Enhanced Sidebar */
+/* Enhanced Sidebar with Security Fixes */
 .sidebar {
-  width: 320px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow);
-  padding: var(--space-6);
+  width: clamp(260px, 28vw, 340px);
+  max-width: 100%;
+  background: var(--color-bg-glass);
+  border: 2px solid var(--color-border-glass);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(25px) saturate(180%) contrast(120%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%) contrast(120%);
+  box-shadow: var(--color-shadow);
+  padding: 32px;
   overflow-y: auto;
   flex-shrink: 0;
+  color: var(--color-text-main);
+  position: relative;
+  transition: transform var(--transition-slow), box-shadow var(--transition-fast);
+  animation: sidebar-slide-in 0.6s var(--transition-snappy);
 }
 
+/* Sidebar slide-in animation */
+@keyframes sidebar-slide-in {
+  0%   { transform: translateX(-100%) scale(0.95); opacity: 0; }
+  100% { transform: translateX(0) scale(1);       opacity: 1; }
+}
+
+/* Glowing rainbow border on hover */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--radius-lg) + 4px);
+  background: linear-gradient(45deg,
+    var(--color-gradient-1),
+    var(--color-gradient-2),
+    var(--color-gradient-3),
+    var(--color-gradient-1));
+  background-size: 400% 400%;
+  opacity: 0;
+  z-index: -1;
+  animation: gradient-rotate 6s linear infinite;
+  transition: opacity var(--transition-fast);
+}
+
+.sidebar:hover {
+  box-shadow: var(--color-shadow-hover);
+}
+
+.sidebar:hover::before {
+  opacity: 0.85;
+}
+
+@keyframes gradient-rotate {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+
+/* Enhanced Sidebar Scrollbar */
 .sidebar::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-base);
+  background: rgba(30,10,50,0.30);
+  border-radius: 12px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: var(--radius-base);
+  background: linear-gradient(180deg,var(--color-gradient-1),var(--color-gradient-2));
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.10);
+  transition: var(--transition-fast);
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-hover);
+  background: linear-gradient(180deg,var(--color-gradient-1) 10%,var(--color-gradient-3) 90%);
+  transform: scaleX(1.3);
+  box-shadow: 0 0 15px rgba(255,150,255,0.50);
 }
 
+/* Enhanced Sidebar Sections */
 .sidebar-section {
-  margin-bottom: var(--space-8);
+  margin-bottom: 36px;
+  padding: 20px;
+  border: 1px solid var(--color-border-glass);
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  animation: fade-slide 0.8s ease forwards;
+}
+
+@keyframes fade-slide {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
 .sidebar-section h3 {
   color: var(--color-text);
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--color-gradient-1), var(--color-gradient-2), var(--color-gradient-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
 }
 
+.sidebar-section:hover h3::after {
+  width: 100%;
+}
+
+.sidebar-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-gradient-1) 0%, var(--color-gradient-3) 100%);
+  box-shadow: 0 0 15px rgba(200,150,255,0.45);
+  transition: width var(--transition-slow);
+}
+
+/* Enhanced Button Groups */
 .button-group {
   display: flex;
   gap: var(--space-3);
@@ -585,7 +704,108 @@ h3 {
 
 .button-group .btn {
   flex: 1;
+  min-width: 110px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-weight: 600;
   font-size: var(--font-size-sm);
+  background: linear-gradient(135deg,rgba(255,110,199,0.25),rgba(191,154,234,0.25));
+  border: 2px solid var(--color-border-glass);
+  transition: var(--transition-fast);
+}
+
+.button-group .btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  background: linear-gradient(135deg,rgba(255,110,199,0.45),rgba(191,154,234,0.45));
+  box-shadow: var(--color-shadow-hover);
+  border-color: rgba(255,150,255,0.7);
+}
+
+/* Enhanced Form Controls with Dark Dropdown */
+.form-control select,
+.form-control input[type="text"],
+.form-control input[type="number"] {
+  width: 100%;
+  max-width: 100%;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  background: rgba(0,0,0,.85) !important;
+  border: 2px solid var(--color-border-glass);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  transition: var(--transition-fast);
+}
+
+.form-control select:hover,
+.form-control input:hover {
+  background: rgba(0,0,0,.9) !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 0 4px rgba(200,120,255,0.2), var(--color-shadow);
+}
+
+.form-control select:focus,
+.form-control input:focus {
+  outline: none;
+  border-color: rgba(255,150,255,0.9);
+  box-shadow: 0 0 0 6px rgba(200,120,255,0.3), var(--color-shadow-hover);
+}
+
+/* Ensure dropdown fits sidebar */
+.sidebar .form-control select {
+  width: 100%;
+  max-width: 90%;
+}
+
+/* Dark dropdown options for all modes */
+.form-control select option {
+  background: rgba(0,0,0,.95) !important;
+  color: #ffffff !important;
+  padding: 12px 20px;
+  font-weight: 600;
+  border: none;
+}
+
+.form-control select option:hover {
+  background: linear-gradient(135deg, #32cd32, #00ced1) !important;
+  color: #ffffff !important;
+}
+
+.form-control select option:checked {
+  background: linear-gradient(135deg, #ffa500, #2d1b69) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Enhanced Checkbox */
+.form-control input[type="checkbox"] {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-border-glass);
+  border-radius: 8px;
+  background: rgba(20,5,40,0.30);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.form-control input[type="checkbox"]:checked {
+  background: linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
+  border-color: rgba(255,150,255,0.8);
+}
+
+.form-control input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 /* Enhanced Canvas Container */
@@ -610,41 +830,55 @@ h3 {
 /* Enhanced Speed Slider */
 .speed-slider {
   width: 100%;
-  height: 8px;
+  height: clamp(6px,.8vh,8px);
   -webkit-appearance: none;
   appearance: none;
-  background: var(--glass-bg);
-  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid var(--color-border-glass);
+  border-radius: 12px;
   outline: none;
-  border: 1px solid var(--glass-border);
-  backdrop-filter: var(--glass-blur);
+  position: relative;
+  overflow: hidden;
+}
+
+.speed-slider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--slider-progress,50%);
+  background: linear-gradient(90deg,var(--color-gradient-1),var(--color-gradient-2));
+  border-radius: 12px;
+  transition: width 0.2s ease;
 }
 
 .speed-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent-purple));
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
   border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.30);
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.3);
   cursor: pointer;
-  box-shadow: var(--shadow-md), var(--shadow-glow);
-  transition: all var(--duration-normal) var(--ease-standard);
+  transition: var(--transition-fast);
 }
 
 .speed-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  box-shadow: var(--shadow-lg), var(--shadow-glow-hover);
+  transform: scale(1.3);
+  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4),0 0 0 8px rgba(255,150,255,0.2);
 }
 
 .speed-slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent-purple));
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
   border-radius: 50%;
   cursor: pointer;
-  border: none;
-  box-shadow: var(--shadow-md), var(--shadow-glow);
+  border: 3px solid rgba(255,255,255,0.30);
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.3);
 }
 
 /* Enhanced Status Bar */
@@ -676,12 +910,12 @@ h3 {
 .algorithm-status {
   color: var(--color-text);
   font-weight: var(--font-weight-medium);
-  background: var(--glass-bg);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-base);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--shadow-sm);
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--color-border-glass);
+  backdrop-filter: blur(20px);
+  transition: var(--transition-fast);
 }
 
 .algorithm-status.success {
@@ -777,33 +1011,6 @@ h3 {
   animation: glow-pulse 1s ease-in-out infinite;
 }
 
-/* Enhanced Responsive Design */
-@media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-    height: auto;
-  }
-  
-  .sidebar {
-    width: 100%;
-    order: 2;
-  }
-  
-  .canvas-container {
-    height: 400px;
-    order: 1;
-  }
-  
-  .button-group {
-    flex-wrap: wrap;
-  }
-  
-  .status-info {
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-}
-
 /* Enhanced Loading States */
 .loading {
   position: relative;
@@ -870,6 +1077,49 @@ h3 {
   }
 }
 
+/* Enhanced Accessibility - Forced Colors Mode */
+@media (forced-colors: active) {
+  .btn:focus-visible {
+    outline: 2px solid Highlight !important;
+  }
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .sidebar {
+    width: 100%;
+    order: 2;
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+  }
+  
+  .canvas-container {
+    height: 400px;
+    order: 1;
+  }
+  
+  .button-group {
+    flex-wrap: wrap;
+  }
+  
+  .status-info {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
 /* Enhanced Print Styles */
 @media print {
   .sidebar,
@@ -887,364 +1137,4 @@ h3 {
     width: 100% !important;
     height: auto !important;
   }
-}
-/* Fix dropdown option text visibility */
-.form-control select option {
-  background: rgba(26, 26, 46, 0.95) !important;
-  color: #ffffff !important;
-  padding: 8px 12px;
-  border: none;
-  font-weight: 500;
-}
-
-/* Light mode dropdown options */
-[data-color-scheme="light"] .form-control select option {
-  background: rgba(45, 27, 105, 0.95) !important;
-  color: #ffffff !important;
-}
-
-/* Dark mode dropdown options */  
-[data-color-scheme="dark"] .form-control select option {
-  background: rgba(26, 26, 46, 0.95) !important;
-  color: #ffffff !important;
-}
-
-/* System preference based options */
-@media (prefers-color-scheme: light) {
-  .form-control select option {
-    background: rgba(45, 27, 105, 0.95) !important;
-    color: #ffffff !important;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .form-control select option {
-    background: rgba(26, 26, 46, 0.95) !important;
-    color: #ffffff !important;
-  }
-}
-
-/* Selected option styling */
-.form-control select option:checked {
-  background: linear-gradient(135deg, #ffa500, #2d1b69) !important;
-  color: #ffffff !important;
-  font-weight: 600;
-}
-
-/* Hover state for options */
-.form-control select option:hover {
-  background: linear-gradient(135deg, #32cd32, #00ced1) !important;
-  color: #ffffff !important;
-}
-
-/* Fix the select element itself */
-.form-control select {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
-  color: #000000 !important; /* Black text for selected value */
-  backdrop-filter: blur(10px);
-}
-
-/* Ensure selected value is visible */
-.form-control select:focus {
-  color: #000000 !important;
-  background: rgba(255, 255, 255, 0.25) !important;
-}
-
-/* -------------------------------------------------
-   MODERN SIDEBAR & DROPDOWN – COMPLETE STYLESHEET
-   (Copy-paste into style.css – no HTML/JS edits needed)
--------------------------------------------------- */
-
-/* ===== 1. DESIGN TOKENS (colors, fonts, easing) == */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-:root {
-  /* core palette – tuned for purple-blue gradient BG */
-  --color-bg-glass: rgba(22, 43, 72, 0.38);
-  --color-border-glass: rgba(200, 120, 255, 0.35);
-  --color-shadow: 0 25px 50px -12px rgba(130, 60, 200, 0.40);
-  --color-shadow-hover: 0 35px 70px -14px rgba(160, 80, 255, 0.50);
-  --color-text-main: #e6f1ff;
-  --color-text-muted: #8899a6;
-  --color-gradient-1: #ff6ec7;
-  --color-gradient-2: #bf9aea;
-  --color-gradient-3: #8ec5ff;
-  --radius-lg: 28px;
-  --transition-snappy: cubic-bezier(0.23, 1, 0.32, 1);
-  --transition-fast: 0.3s var(--transition-snappy);
-  --transition-slow: 0.6s var(--transition-snappy);
-  font-family: 'Inter', sans-serif;
-}
-
-/* Dark-mode overrides */
-[data-color-scheme="dark"] {
-  --color-bg-glass: rgba(10, 25, 47, 0.50);
-  --color-border-glass: rgba(180, 100, 235, 0.45);
-  --color-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
-  --color-shadow-hover: 0 35px 70px -14px rgba(0, 0, 0, 0.75);
-}
-
-/* ===== 2. SIDEBAR CONTAINER ===================== */
-.sidebar {
-  width: 340px;
-  padding: 32px;
-  backdrop-filter: blur(25px) saturate(180%) contrast(120%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%) contrast(120%);
-  background: var(--color-bg-glass);
-  border: 2px solid var(--color-border-glass);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--color-shadow);
-  color: var(--color-text-main);
-  overflow-y: auto;
-  position: relative;
-  transition: transform var(--transition-slow), box-shadow var(--transition-fast);
-  animation: sidebar-slide-in 0.6s var(--transition-snappy);
-}
-
-/* slide-in from left (only first mount) */
-@keyframes sidebar-slide-in {
-  0%   { transform: translateX(-100%) scale(0.95); opacity: 0; }
-  100% { transform: translateX(0) scale(1);       opacity: 1; }
-}
-
-/* glowing rainbow border on hover */
-.sidebar::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: calc(var(--radius-lg) + 4px);
-  background: linear-gradient(45deg,
-    var(--color-gradient-1),
-    var(--color-gradient-2),
-    var(--color-gradient-3),
-    var(--color-gradient-1));
-  background-size: 400% 400%;
-  opacity: 0;
-  z-index: -1;
-  animation: gradient-rotate 6s linear infinite;
-  transition: opacity var(--transition-fast);
-}
-.sidebar:hover {
-  box-shadow: var(--color-shadow-hover);
-}
-.sidebar:hover::before {
-  opacity: 0.85;
-}
-@keyframes gradient-rotate {
-  0%,100% { background-position: 0% 50%; }
-  50%     { background-position: 100% 50%; }
-}
-
-/* ===== 3. SECTION LAYOUT ======================== */
-.sidebar-section {
-  margin-bottom: 36px;
-  padding: 20px;
-  border: 1px solid var(--color-border-glass);
-  border-radius: 20px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  animation: fade-slide 0.8s ease forwards;
-}
-@keyframes fade-slide {
-  0%   { opacity: 0; transform: translateY(30px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0)    scale(1); }
-}
-
-/* section headings */
-.sidebar-section h3 {
-  margin-bottom: 24px;
-  font-size: 20px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--color-gradient-1), var(--color-gradient-2), var(--color-gradient-3));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  position: relative;
-}
-.sidebar-section:hover h3::after {
-  width: 100%;
-}
-.sidebar-section h3::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 0;
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-gradient-1) 0%, var(--color-gradient-3) 100%);
-  box-shadow: 0 0 15px rgba(200,150,255,0.45);
-  transition: width var(--transition-slow);
-}
-
-/* ===== 4. FORM CONTROLS & DROPDOWNS ============== */
-.form-label {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  display: block;
-  background: linear-gradient(135deg,#ff9a9e,#fecfef);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.form-control select,
-.form-control input[type="text"],
-.form-control input[type="number"] {
-  width: 100%;
-  padding: 16px 24px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-main);
-  background: rgba(20,5,40,0.3);
-  border: 2px solid var(--color-border-glass);
-  border-radius: 20px;
-  backdrop-filter: blur(15px);
-  transition: var(--transition-fast);
-}
-.form-control select:hover,
-.form-control input:hover {
-  background: rgba(30,10,50,0.5);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 0 0 4px rgba(200,120,255,0.2), var(--color-shadow);
-}
-.form-control select:focus,
-.form-control input:focus {
-  outline: none;
-  border-color: rgba(255,150,255,0.9);
-  box-shadow: 0 0 0 6px rgba(200,120,255,0.3), var(--color-shadow-hover);
-}
-.form-control::placeholder { color: rgba(255,240,255,0.6); }
-
-/* dropdown option theming */
-.form-control select option {
-  background: rgba(26,26,46,0.96);
-  color: #ffffff;
-  padding: 12px 20px;
-  font-weight: 600;
-}
-.form-control select option:hover {
-  background: linear-gradient(135deg, var(--color-gradient-1) 0%, var(--color-gradient-2) 100%);
-}
-.form-control select option:checked {
-  background: linear-gradient(135deg, var(--color-gradient-1) 0%, var(--color-gradient-3) 100%);
-}
-
-/* ===== 5. BUTTONS (reuse existing .btn classes) == */
-.sidebar .btn {
-  flex: 1;
-  min-width: 110px;
-  padding: 14px 20px;
-  border-radius: 16px;
-  font-weight: 600;
-  background: linear-gradient(135deg,rgba(255,110,199,0.25),rgba(191,154,234,0.25));
-  border: 2px solid var(--color-border-glass);
-  transition: var(--transition-fast);
-}
-.sidebar .btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  background: linear-gradient(135deg,rgba(255,110,199,0.45),rgba(191,154,234,0.45));
-  box-shadow: var(--color-shadow-hover);
-  border-color: rgba(255,150,255,0.7);
-}
-
-/* ===== 6. CUSTOM SCROLLBAR ======================= */
-.sidebar::-webkit-scrollbar           { width: 10px; }
-.sidebar::-webkit-scrollbar-track     { background: rgba(30,10,50,0.30); border-radius: 12px; }
-.sidebar::-webkit-scrollbar-thumb     {
-  background: linear-gradient(180deg,var(--color-gradient-1),var(--color-gradient-2));
-  border-radius: 12px;
-  border: 2px solid rgba(255,255,255,0.10);
-  transition: var(--transition-fast);
-}
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg,var(--color-gradient-1) 10%,var(--color-gradient-3) 90%);
-  transform: scaleX(1.3);
-  box-shadow: 0 0 15px rgba(255,150,255,0.50);
-}
-
-/* ===== 7. CHECKBOX (if used) ===================== */
-.form-control input[type="checkbox"] {
-  appearance:none;
-  width:24px;height:24px;
-  border:2px solid var(--color-border-glass);
-  border-radius:8px;
-  background:rgba(20,5,40,0.30);
-  cursor:pointer;
-  transition:var(--transition-fast);
-}
-.form-control input[type="checkbox"]:checked {
-  background:linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
-  border-color:rgba(255,150,255,0.8);
-}
-.form-control input[type="checkbox"]:checked::after {
-  content:'✓';
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-weight:bold;
-  font-size:14px;
-}
-
-/* ===== 8. SPEED SLIDER TRACK & THUMB ============= */
-.speed-slider {
-  width:100%;height:8px;
-  appearance:none;
-  background:rgba(255,255,255,0.10);
-  border:1px solid var(--color-border-glass);
-  border-radius:12px;
-  position:relative;
-  overflow:hidden;
-}
-.speed-slider::before {
-  content:'';
-  position:absolute;top:0;left:0;
-  height:100%;
-  width:var(--slider-progress,50%);
-  background:linear-gradient(90deg,var(--color-gradient-1),var(--color-gradient-2));
-  border-radius:12px;
-  transition:width 0.2s ease;
-}
-.speed-slider::-webkit-slider-thumb {
-  appearance:none;
-  width:24px;height:24px;
-  background:linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
-  border-radius:50%;
-  border:3px solid rgba(255,255,255,0.30);
-  box-shadow:0 8px 20px -8px rgba(0,0,0,0.3);
-  cursor:pointer;
-  transition:var(--transition-fast);
-}
-.speed-slider::-webkit-slider-thumb:hover {
-  transform:scale(1.3);
-  box-shadow:0 12px 30px -8px rgba(0,0,0,0.4),0 0 0 8px rgba(255,150,255,0.2);
-}
-
-/* ===== 9. STATUS BADGES ========================== */
-.algorithm-status {
-  padding:12px 18px;
-  border-radius:16px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid var(--color-border-glass);
-  backdrop-filter:blur(20px);
-  transition:var(--transition-fast);
-}
-.algorithm-status.success { color:#4caf50; border-color:#4caf50; }
-.algorithm-status.error   { color:#f44336; border-color:#f44336; }
-.algorithm-status.info    { color:#2196f3; border-color:#2196f3; }
-
-/* ===== 10. RESPONSIVE BEHAVIOUR ================== */
-@media (max-width:768px){
-  .sidebar{
-    width:100%;
-    border-radius:20px 20px 0 0;
-    padding:24px;
-  }
-}
-
-/* ===== 11. REDUCED-MOTION SUPPORT =============== */
-@media (prefers-reduced-motion:reduce){
-  *{transition:none!important;animation:none!important}
 }
