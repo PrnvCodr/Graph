@@ -712,175 +712,171 @@ h3 {
   border-color: rgba(255,150,255,0.7);
 }
 
-/* 🔥 SUPER ENHANCED DROPDOWN STYLING - COMPLETELY FIXED 🔥 */
-/* Target all select elements specifically in your sidebar */
+/* 🎨 MODERN DARK DROPDOWN STYLING - CLEAN & ELEGANT */
+
+/* Modern Select Dropdown Styling */
+.modern-select,
 #graphType,
-#algorithmSelect,
-#startNodeSelect,
-.form-control select,
-select.form-control {
-  width: 100% !important;
-  max-width: 100% !important;
-  padding: 16px 24px !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-  background: rgba(15, 15, 35, 0.95) !important;
-  border: 2px solid var(--color-border-glass) !important;
-  border-radius: 20px !important;
-  backdrop-filter: blur(15px) !important;
-  transition: var(--transition-fast) !important;
+#algorithmSelect, 
+#startNodeSelect {
+  /* Remove default styling */
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
+  
+  /* Modern dark styling */
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+  border: 2px solid rgba(100, 255, 218, 0.3) !important;
+  border-radius: 16px !important;
+  color: #e2e8f0 !important;
+  
+  /* Typography & spacing */
+  padding: 14px 50px 14px 20px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  
+  /* Transitions & effects */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  
+  /* Custom dropdown arrow */
+  background-image: 
+    linear-gradient(45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%) !important;
+  background-position: 
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px) !important;
+  background-size: 5px 5px, 5px 5px !important;
+  background-repeat: no-repeat !important;
+  
   cursor: pointer !important;
 }
 
-/* Hover states for select elements */
+/* Hover state */
+.modern-select:hover,
 #graphType:hover,
 #algorithmSelect:hover,
-#startNodeSelect:hover,
-.form-control select:hover,
-select.form-control:hover {
-  background: rgba(10, 10, 30, 0.98) !important;
-  transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 0 0 0 4px rgba(200,120,255,0.2), var(--color-shadow) !important;
+#startNodeSelect:hover {
+  border-color: rgba(100, 255, 218, 0.6) !important;
+  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(100, 255, 218, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Focus states for select elements */
+/* Focus state */
+.modern-select:focus,
 #graphType:focus,
 #algorithmSelect:focus,
-#startNodeSelect:focus,
-.form-control select:focus,
-select.form-control:focus {
+#startNodeSelect:focus {
   outline: none !important;
-  border-color: rgba(255,150,255,0.9) !important;
-  box-shadow: 0 0 0 6px rgba(200,120,255,0.3), var(--color-shadow-hover) !important;
-  background: rgba(5, 5, 25, 0.98) !important;
+  border-color: #64ffda !important;
+  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
+  box-shadow: 
+    0 0 0 3px rgba(100, 255, 218, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* 🎯 DROPDOWN OPTIONS - COMPLETELY FIXED FOR ALL BROWSERS */
+/* Modern dropdown options */
+.modern-select option,
 #graphType option,
 #algorithmSelect option,
-#startNodeSelect option,
-.form-control select option,
-select.form-control option {
-  background: rgba(15, 15, 35, 0.98) !important;
-  color: #ffffff !important;
-  padding: 16px 20px !important;
-  font-weight: 600 !important;
+#startNodeSelect option {
+  background: #1a1a2e !important;
+  color: #e2e8f0 !important;
+  padding: 12px 20px !important;
+  font-weight: 500 !important;
   border: none !important;
   font-size: 15px !important;
   line-height: 1.4 !important;
-  margin: 0 !important;
 }
 
-/* Hover states for options */
+/* Option hover states */
+.modern-select option:hover,
 #graphType option:hover,
 #algorithmSelect option:hover,
-#startNodeSelect option:hover,
-.form-control select option:hover {
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.8), rgba(156, 39, 176, 0.8)) !important;
-  color: #ffffff !important;
+#startNodeSelect option:hover {
+  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
+  color: #1a1a2e !important;
 }
 
-/* Selected states for options */
+/* Selected option styling */
+.modern-select option:checked,
+.modern-select option:selected,
 #graphType option:checked,
 #graphType option:selected,
 #algorithmSelect option:checked,
 #algorithmSelect option:selected,
 #startNodeSelect option:checked,
-#startNodeSelect option:selected,
-.form-control select option:checked,
-.form-control select option:selected {
-  background: linear-gradient(135deg, rgba(0, 255, 127, 0.9), rgba(103, 58, 183, 0.9)) !important;
-  color: #000000 !important;
-  font-weight: 700 !important;
+#startNodeSelect option:selected {
+  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
+  color: #1a1a2e !important;
+  font-weight: 600 !important;
 }
 
-/* Dark mode dropdown options */
-[data-color-scheme="dark"] #graphType option,
-[data-color-scheme="dark"] #algorithmSelect option,
-[data-color-scheme="dark"] #startNodeSelect option,
-[data-color-scheme="dark"] .form-control select option {
-  background: rgba(10, 10, 25, 0.98) !important;
-  color: #e6f1ff !important;
+/* Disabled state */
+.modern-select:disabled,
+#graphType:disabled,
+#algorithmSelect:disabled,
+#startNodeSelect:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background: #2a2a3e !important;
+  color: #64748b !important;
 }
 
-[data-color-scheme="dark"] #graphType option:hover,
-[data-color-scheme="dark"] #algorithmSelect option:hover,
-[data-color-scheme="dark"] #startNodeSelect option:hover,
-[data-color-scheme="dark"] .form-control select option:hover {
-  background: linear-gradient(135deg, rgba(0, 255, 127, 0.8), rgba(138, 43, 226, 0.8)) !important;
-  color: #ffffff !important;
+/* Remove IE dropdown arrow */
+.modern-select::-ms-expand,
+#graphType::-ms-expand,
+#algorithmSelect::-ms-expand,
+#startNodeSelect::-ms-expand {
+  display: none !important;
 }
 
-[data-color-scheme="dark"] #graphType option:checked,
-[data-color-scheme="dark"] #graphType option:selected,
-[data-color-scheme="dark"] #algorithmSelect option:checked,
-[data-color-scheme="dark"] #algorithmSelect option:selected,
-[data-color-scheme="dark"] #startNodeSelect option:checked,
-[data-color-scheme="dark"] #startNodeSelect option:selected,
-[data-color-scheme="dark"] .form-control select option:checked,
-[data-color-scheme="dark"] .form-control select option:selected {
-  background: linear-gradient(135deg, rgba(0, 255, 127, 0.9), rgba(138, 43, 226, 0.9)) !important;
-  color: #000000 !important;
-}
-
-/* Custom dropdown arrow for all select elements */
-#graphType,
-#algorithmSelect,
-#startNodeSelect,
-.form-control select,
-select.form-control {
-  background-image: 
-    linear-gradient(45deg, transparent 40%, #ffffff 40%, #ffffff 60%, transparent 60%),
-    linear-gradient(-45deg, transparent 40%, #ffffff 40%, #ffffff 60%, transparent 60%) !important;
-  background-position: 
-    calc(100% - 20px) calc(50% - 2px),
-    calc(100% - 16px) calc(50% - 2px) !important;
-  background-size: 4px 4px, 4px 4px !important;
-  background-repeat: no-repeat !important;
-  padding-right: 50px !important;
-}
-
-/* Enhanced dropdown focus ring */
-#graphType:focus,
-#algorithmSelect:focus,
-#startNodeSelect:focus,
-.form-control select:focus {
-  box-shadow: 
-    0 0 0 3px rgba(255, 107, 53, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-}
-
-[data-color-scheme="dark"] #graphType:focus,
-[data-color-scheme="dark"] #algorithmSelect:focus,
-[data-color-scheme="dark"] #startNodeSelect:focus,
-[data-color-scheme="dark"] .form-control select:focus {
-  box-shadow: 
-    0 0 0 3px rgba(0, 255, 127, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Better dropdown styling for all browsers */
-@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+/* Firefox specific styling */
+@-moz-document url-prefix() {
+  .modern-select,
   #graphType,
   #algorithmSelect,
-  #startNodeSelect,
-  .form-control select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
+  #startNodeSelect {
+    background-image: none !important;
+    padding-right: 20px !important;
   }
-  
-  #graphType::-ms-expand,
-  #algorithmSelect::-ms-expand,
-  #startNodeSelect::-ms-expand,
-  .form-control select::-ms-expand {
-    display: none !important;
-  }
+}
+
+/* Dark theme compatibility */
+[data-theme="dark"] .modern-select,
+[data-theme="dark"] #graphType,
+[data-theme="dark"] #algorithmSelect,
+[data-theme="dark"] #startNodeSelect {
+  background: linear-gradient(145deg, #0f0f23 0%, #1a1a2e 100%) !important;
+  border-color: rgba(0, 255, 127, 0.3) !important;
+}
+
+[data-theme="dark"] .modern-select:hover,
+[data-theme="dark"] #graphType:hover,
+[data-theme="dark"] #algorithmSelect:hover,
+[data-theme="dark"] #startNodeSelect:hover {
+  border-color: rgba(0, 255, 127, 0.6) !important;
+}
+
+[data-theme="dark"] .modern-select:focus,
+[data-theme="dark"] #graphType:focus,
+[data-theme="dark"] #algorithmSelect:focus,
+[data-theme="dark"] #startNodeSelect:focus {
+  border-color: #00ff7f !important;
+  box-shadow: 
+    0 0 0 3px rgba(0, 255, 127, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Enhanced Checkbox */
@@ -932,58 +928,124 @@ select.form-control {
   transition: all var(--duration-fast) var(--ease-standard);
 }
 
-/* Enhanced Speed Slider */
+/* 🚀 FIXED SPEED SLIDER - COMPLETELY REDESIGNED */
 .speed-slider {
   width: 100%;
-  height: clamp(6px,.8vh,8px);
+  height: 12px;
   -webkit-appearance: none;
   appearance: none;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid var(--color-border-glass);
-  border-radius: 12px;
+  background: transparent;
   outline: none;
   position: relative;
+  border-radius: 10px;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.speed-slider::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: var(--slider-progress,50%);
-  background: linear-gradient(90deg,var(--color-gradient-1),var(--color-gradient-2));
-  border-radius: 12px;
-  transition: width 0.2s ease;
+/* Slider track */
+.speed-slider::-webkit-slider-track {
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(90deg, 
+    var(--color-gradient-1) 0%, 
+    var(--color-gradient-2) 50%, 
+    var(--color-gradient-3) 100%);
+  border-radius: 10px;
+  border: 1px solid var(--color-border-glass);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Slider thumb - WebKit */
 .speed-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border: 3px solid var(--color-primary);
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.30);
-  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.3);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 10;
 }
 
+/* Slider thumb hover */
 .speed-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.3);
-  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4),0 0 0 8px rgba(255,150,255,0.2);
+  transform: scale(1.2);
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  border-color: var(--color-primary-hover);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 4px rgba(255, 255, 255, 0.3),
+    0 0 20px var(--color-primary);
 }
 
+/* Slider thumb active */
+.speed-slider::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #f8f8f8 0%, #d8d8d8 100%);
+}
+
+/* Firefox slider track */
+.speed-slider::-moz-range-track {
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(90deg, 
+    var(--color-gradient-1) 0%, 
+    var(--color-gradient-2) 50%, 
+    var(--color-gradient-3) 100%);
+  border-radius: 10px;
+  border: 1px solid var(--color-border-glass);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Firefox slider thumb */
 .speed-slider::-moz-range-thumb {
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg,var(--color-gradient-1),var(--color-gradient-2));
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border: 3px solid var(--color-primary);
   border-radius: 50%;
   cursor: pointer;
-  border: 3px solid rgba(255,255,255,0.30);
-  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Firefox slider thumb hover */
+.speed-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  border-color: var(--color-primary-hover);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 4px rgba(255, 255, 255, 0.3),
+    0 0 20px var(--color-primary);
+}
+
+/* Dark mode slider adjustments */
+[data-color-scheme="dark"] .speed-slider::-webkit-slider-thumb,
+[data-color-scheme="dark"] .speed-slider::-moz-range-thumb {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: white;
+}
+
+[data-color-scheme="dark"] .speed-slider::-webkit-slider-thumb:hover,
+[data-color-scheme="dark"] .speed-slider::-moz-range-thumb:hover {
+  border-color: var(--color-primary-hover);
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+}
+
+/* Slider container improvements */
+.form-group .speed-slider {
+  margin-top: 8px;
 }
 
 /* Enhanced Status Bar */
@@ -1487,171 +1549,3 @@ select.form-control {
 }
 
 /* ✨ END OF ENHANCED EFFECTS ✨ */
-
-/* 🎨 MODERN DARK DROPDOWN STYLING - CLEAN & ELEGANT */
-
-/* Modern Select Dropdown Styling */
-.modern-select,
-#graphType,
-#algorithmSelect, 
-#startNodeSelect {
-  /* Remove default styling */
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-  
-  /* Modern dark styling */
-  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
-  border: 2px solid rgba(100, 255, 218, 0.3) !important;
-  border-radius: 16px !important;
-  color: #e2e8f0 !important;
-  
-  /* Typography & spacing */
-  padding: 14px 50px 14px 20px !important;
-  font-size: 15px !important;
-  font-weight: 500 !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  
-  /* Transitions & effects */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  backdrop-filter: blur(10px) !important;
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  
-  /* Custom dropdown arrow */
-  background-image: 
-    linear-gradient(45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%),
-    linear-gradient(-45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%) !important;
-  background-position: 
-    calc(100% - 16px) calc(50% - 3px),
-    calc(100% - 12px) calc(50% - 3px) !important;
-  background-size: 5px 5px, 5px 5px !important;
-  background-repeat: no-repeat !important;
-  
-  cursor: pointer !important;
-}
-
-/* Hover state */
-.modern-select:hover,
-#graphType:hover,
-#algorithmSelect:hover,
-#startNodeSelect:hover {
-  border-color: rgba(100, 255, 218, 0.6) !important;
-  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.15),
-    0 0 0 4px rgba(100, 255, 218, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-}
-
-/* Focus state */
-.modern-select:focus,
-#graphType:focus,
-#algorithmSelect:focus,
-#startNodeSelect:focus {
-  outline: none !important;
-  border-color: #64ffda !important;
-  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
-  box-shadow: 
-    0 0 0 3px rgba(100, 255, 218, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-  transform: translateY(-1px) !important;
-}
-
-/* Modern dropdown options */
-.modern-select option,
-#graphType option,
-#algorithmSelect option,
-#startNodeSelect option {
-  background: #1a1a2e !important;
-  color: #e2e8f0 !important;
-  padding: 12px 20px !important;
-  font-weight: 500 !important;
-  border: none !important;
-  font-size: 15px !important;
-  line-height: 1.4 !important;
-}
-
-/* Option hover states */
-.modern-select option:hover,
-#graphType option:hover,
-#algorithmSelect option:hover,
-#startNodeSelect option:hover {
-  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
-  color: #1a1a2e !important;
-}
-
-/* Selected option styling */
-.modern-select option:checked,
-.modern-select option:selected,
-#graphType option:checked,
-#graphType option:selected,
-#algorithmSelect option:checked,
-#algorithmSelect option:selected,
-#startNodeSelect option:checked,
-#startNodeSelect option:selected {
-  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
-  color: #1a1a2e !important;
-  font-weight: 600 !important;
-}
-
-/* Disabled state */
-.modern-select:disabled,
-#graphType:disabled,
-#algorithmSelect:disabled,
-#startNodeSelect:disabled {
-  opacity: 0.6 !important;
-  cursor: not-allowed !important;
-  background: #2a2a3e !important;
-  color: #64748b !important;
-}
-
-/* Remove IE dropdown arrow */
-.modern-select::-ms-expand,
-#graphType::-ms-expand,
-#algorithmSelect::-ms-expand,
-#startNodeSelect::-ms-expand {
-  display: none !important;
-}
-
-/* Firefox specific styling */
-@-moz-document url-prefix() {
-  .modern-select,
-  #graphType,
-  #algorithmSelect,
-  #startNodeSelect {
-    background-image: none !important;
-    padding-right: 20px !important;
-  }
-}
-
-/* Dark theme compatibility */
-[data-theme="dark"] .modern-select,
-[data-theme="dark"] #graphType,
-[data-theme="dark"] #algorithmSelect,
-[data-theme="dark"] #startNodeSelect {
-  background: linear-gradient(145deg, #0f0f23 0%, #1a1a2e 100%) !important;
-  border-color: rgba(0, 255, 127, 0.3) !important;
-}
-
-[data-theme="dark"] .modern-select:hover,
-[data-theme="dark"] #graphType:hover,
-[data-theme="dark"] #algorithmSelect:hover,
-[data-theme="dark"] #startNodeSelect:hover {
-  border-color: rgba(0, 255, 127, 0.6) !important;
-}
-
-[data-theme="dark"] .modern-select:focus,
-[data-theme="dark"] #graphType:focus,
-[data-theme="dark"] #algorithmSelect:focus,
-[data-theme="dark"] #startNodeSelect:focus {
-  border-color: #00ff7f !important;
-  box-shadow: 
-    0 0 0 3px rgba(0, 255, 127, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-}
-
