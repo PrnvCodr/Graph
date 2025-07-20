@@ -1487,3 +1487,171 @@ select.form-control {
 }
 
 /* ✨ END OF ENHANCED EFFECTS ✨ */
+
+/* 🎨 MODERN DARK DROPDOWN STYLING - CLEAN & ELEGANT */
+
+/* Modern Select Dropdown Styling */
+.modern-select,
+#graphType,
+#algorithmSelect, 
+#startNodeSelect {
+  /* Remove default styling */
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  
+  /* Modern dark styling */
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+  border: 2px solid rgba(100, 255, 218, 0.3) !important;
+  border-radius: 16px !important;
+  color: #e2e8f0 !important;
+  
+  /* Typography & spacing */
+  padding: 14px 50px 14px 20px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  
+  /* Transitions & effects */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  
+  /* Custom dropdown arrow */
+  background-image: 
+    linear-gradient(45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, #64ffda 40%, #64ffda 60%, transparent 60%) !important;
+  background-position: 
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px) !important;
+  background-size: 5px 5px, 5px 5px !important;
+  background-repeat: no-repeat !important;
+  
+  cursor: pointer !important;
+}
+
+/* Hover state */
+.modern-select:hover,
+#graphType:hover,
+#algorithmSelect:hover,
+#startNodeSelect:hover {
+  border-color: rgba(100, 255, 218, 0.6) !important;
+  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(100, 255, 218, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Focus state */
+.modern-select:focus,
+#graphType:focus,
+#algorithmSelect:focus,
+#startNodeSelect:focus {
+  outline: none !important;
+  border-color: #64ffda !important;
+  background: linear-gradient(145deg, #1e1e3f 0%, #1a2448 100%) !important;
+  box-shadow: 
+    0 0 0 3px rgba(100, 255, 218, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Modern dropdown options */
+.modern-select option,
+#graphType option,
+#algorithmSelect option,
+#startNodeSelect option {
+  background: #1a1a2e !important;
+  color: #e2e8f0 !important;
+  padding: 12px 20px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+
+/* Option hover states */
+.modern-select option:hover,
+#graphType option:hover,
+#algorithmSelect option:hover,
+#startNodeSelect option:hover {
+  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
+  color: #1a1a2e !important;
+}
+
+/* Selected option styling */
+.modern-select option:checked,
+.modern-select option:selected,
+#graphType option:checked,
+#graphType option:selected,
+#algorithmSelect option:checked,
+#algorithmSelect option:selected,
+#startNodeSelect option:checked,
+#startNodeSelect option:selected {
+  background: linear-gradient(135deg, #64ffda 0%, #4fd1c7 100%) !important;
+  color: #1a1a2e !important;
+  font-weight: 600 !important;
+}
+
+/* Disabled state */
+.modern-select:disabled,
+#graphType:disabled,
+#algorithmSelect:disabled,
+#startNodeSelect:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background: #2a2a3e !important;
+  color: #64748b !important;
+}
+
+/* Remove IE dropdown arrow */
+.modern-select::-ms-expand,
+#graphType::-ms-expand,
+#algorithmSelect::-ms-expand,
+#startNodeSelect::-ms-expand {
+  display: none !important;
+}
+
+/* Firefox specific styling */
+@-moz-document url-prefix() {
+  .modern-select,
+  #graphType,
+  #algorithmSelect,
+  #startNodeSelect {
+    background-image: none !important;
+    padding-right: 20px !important;
+  }
+}
+
+/* Dark theme compatibility */
+[data-theme="dark"] .modern-select,
+[data-theme="dark"] #graphType,
+[data-theme="dark"] #algorithmSelect,
+[data-theme="dark"] #startNodeSelect {
+  background: linear-gradient(145deg, #0f0f23 0%, #1a1a2e 100%) !important;
+  border-color: rgba(0, 255, 127, 0.3) !important;
+}
+
+[data-theme="dark"] .modern-select:hover,
+[data-theme="dark"] #graphType:hover,
+[data-theme="dark"] #algorithmSelect:hover,
+[data-theme="dark"] #startNodeSelect:hover {
+  border-color: rgba(0, 255, 127, 0.6) !important;
+}
+
+[data-theme="dark"] .modern-select:focus,
+[data-theme="dark"] #graphType:focus,
+[data-theme="dark"] #algorithmSelect:focus,
+[data-theme="dark"] #startNodeSelect:focus {
+  border-color: #00ff7f !important;
+  box-shadow: 
+    0 0 0 3px rgba(0, 255, 127, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
