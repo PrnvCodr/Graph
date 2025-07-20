@@ -950,4 +950,468 @@ h3 {
   color: #000000 !important;
   background: rgba(255, 255, 255, 0.25) !important;
 }
+/* ====================================
+   MODERN SIDEBAR ENHANCEMENTS
+   Enhanced styling for the graph visualizer sidebar
+   ==================================== */
+
+/* Enhanced Sidebar Base Styles */
+.sidebar {
+    width: 340px !important; /* Slightly wider for better breathing room */
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 24px !important; /* More rounded for modern look */
+    backdrop-filter: blur(24px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+    box-shadow: 
+        0 20px 40px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    padding: 28px !important;
+    overflow: hidden !important;
+    flex-shrink: 0;
+    position: relative;
+    transform: translateX(0) !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    animation: sidebar-slide-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Slide-in animation */
+@keyframes sidebar-slide-in {
+    0% {
+        transform: translateX(-100%) scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Sidebar Glow Effect */
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--color-primary), 
+        var(--color-accent-purple), 
+        var(--color-accent-cyan), 
+        var(--color-primary));
+    background-size: 300% 300%;
+    border-radius: 26px;
+    z-index: -1;
+    opacity: 0;
+    animation: gradient-shift 6s ease infinite;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar:hover::before {
+    opacity: 0.15;
+}
+
+/* Enhanced Scroll Container */
+.sidebar {
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* Custom Scrollbar - Webkit */
+.sidebar::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    margin: 8px !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+        var(--color-primary), 
+        var(--color-accent-purple)) !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+        var(--color-primary-hover), 
+        var(--color-accent-purple)) !important;
+    transform: scaleX(1.2) !important;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.4) !important;
+}
+
+/* Enhanced Sidebar Sections */
+.sidebar-section {
+    margin-bottom: 32px !important;
+    position: relative;
+    animation: fade-in-up 0.6s ease forwards;
+    animation-delay: calc(var(--section-index, 0) * 0.1s);
+}
+
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Section Headers */
+.sidebar-section h3 {
+    color: var(--color-text) !important;
+    margin-bottom: 20px !important;
+    font-size: 18px !important;
+    font-weight: 650 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    letter-spacing: 0.5px !important;
+    position: relative;
+    padding-left: 0 !important;
+    line-height: 1.3 !important;
+}
+
+/* Animated underline for section headers */
+.sidebar-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent-purple));
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sidebar-section:hover h3::after {
+    width: 100%;
+}
+
+/* Enhanced Button Groups */
+.button-group {
+    display: flex !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+}
+
+/* Enhanced Form Controls */
+.sidebar .form-control {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 14px 18px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: var(--color-text) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar .form-control::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.sidebar .form-control:hover::before {
+    left: 100%;
+}
+
+.sidebar .form-control:focus {
+    outline: none !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 
+        0 0 0 4px var(--color-focus-ring),
+        0 8px 25px -8px rgba(255, 107, 53, 0.3) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 400 !important;
+}
+
+/* Enhanced Buttons */
+.sidebar .btn {
+    border-radius: 16px !important;
+    padding: 12px 20px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.3px !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px) !important;
+    transform: translateZ(0);
+}
+
+.sidebar .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+.sidebar .btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.sidebar .btn:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 
+        0 15px 35px -10px rgba(0, 0, 0, 0.3),
+        0 0 20px var(--color-primary) !important;
+}
+
+.sidebar .btn:active {
+    transform: translateY(-1px) scale(1.02) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Primary Button Enhancement */
+.sidebar .btn--primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-purple) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 
+        0 10px 30px -10px rgba(255, 107, 53, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar .btn--primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-accent-purple) 100%) !important;
+    box-shadow: 
+        0 20px 40px -10px rgba(255, 107, 53, 0.5),
+        0 0 30px rgba(255, 107, 53, 0.6) !important;
+}
+
+/* Secondary Button Enhancement */
+.sidebar .btn--secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: var(--color-text) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+.sidebar .btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: var(--color-text) !important;
+}
+
+/* Outline Button Enhancement */
+.sidebar .btn--outline {
+    background: transparent !important;
+    border: 2px solid var(--color-primary) !important;
+    color: var(--color-primary) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+.sidebar .btn--outline:hover {
+    background: var(--color-primary) !important;
+    color: var(--color-btn-primary-text) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* Enhanced Speed Slider */
+.sidebar .speed-slider {
+    height: 8px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar .speed-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--slider-progress, 50%);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent-purple));
+    border-radius: 12px;
+    transition: width 0.2s ease;
+}
+
+.sidebar .speed-slider::-webkit-slider-thumb {
+    width: 24px !important;
+    height: 24px !important;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent-purple)) !important;
+    border-radius: 50% !important;
+    border: 3px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+        0 8px 20px -8px rgba(0, 0, 0, 0.3),
+        0 0 0 0 var(--color-primary) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    cursor: pointer !important;
+}
+
+.sidebar .speed-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.3) !important;
+    box-shadow: 
+        0 12px 30px -8px rgba(0, 0, 0, 0.4),
+        0 0 0 8px rgba(255, 107, 53, 0.2) !important;
+}
+
+/* Enhanced Status Elements */
+.sidebar .algorithm-status {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 12px 18px !important;
+    backdrop-filter: blur(20px) !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar .algorithm-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transition: left 1s ease;
+}
+
+.sidebar .algorithm-status.success::before,
+.sidebar .algorithm-status.error::before,
+.sidebar .algorithm-status.info::before {
+    left: 100%;
+}
+
+/* Label Enhancements */
+.sidebar .form-label {
+    color: var(--color-text) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    letter-spacing: 0.3px !important;
+    opacity: 0.9 !important;
+}
+
+/* Responsive Behavior */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 20px 20px 0 0 !important;
+        position: relative !important;
+        transform: none !important;
+    }
+    
+    .sidebar::before {
+        border-radius: 22px 22px 0 0;
+    }
+}
+
+/* Enhanced Focus Ring for Accessibility */
+.sidebar *:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px var(--color-focus-ring) !important;
+    border-radius: 12px !important;
+}
+
+/* Smooth state transitions */
+.sidebar * {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Loading State Enhancement */
+.sidebar.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.sidebar.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    animation: shimmer 2s infinite;
+    z-index: 10;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Micro-interactions */
+.sidebar .btn,
+.sidebar .form-control {
+    transform-style: preserve-3d;
+}
+
+.sidebar .btn:hover {
+    animation: subtle-bounce 0.6s ease;
+}
+
+@keyframes subtle-bounce {
+    0%, 100% { transform: translateY(-3px) scale(1.05); }
+    50% { transform: translateY(-5px) scale(1.08); }
+}
+
+/* Enhanced Dark Mode */
+[data-color-scheme="dark"] .sidebar {
+    background: rgba(15, 15, 35, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-color-scheme="dark"] .sidebar::before {
+    opacity: 0.08;
+}
+
+[data-color-scheme="dark"] .sidebar:hover::before {
+    opacity: 0.12;
+}
+
+/* Enhanced Light Mode */
+[data-color-scheme="light"] .sidebar {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.20) !important;
+}
+
+[data-color-scheme="light"] .sidebar::before {
+    opacity: 0.12;
+}
+
+[data-color-scheme="light"] .sidebar:hover::before {
+    opacity: 0.18;
+}
+
 
