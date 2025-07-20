@@ -560,9 +560,9 @@ h3 {
   height: calc(100vh - 200px);
 }
 
-/* Enhanced Sidebar with Security Fixes */
+/* Enhanced Sidebar with Security Fixes and Increased Width */
 .sidebar {
-  width: clamp(260px, 28vw, 340px);
+  width: clamp(320px, 28vw, 380px);
   max-width: 100%;
   background: var(--color-bg-glass);
   border: 2px solid var(--color-border-glass);
