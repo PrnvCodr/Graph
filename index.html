@@ -8,11 +8,6 @@
     <link rel="stylesheet" href="ai-assistant.css">
     <link rel="stylesheet" href="collaboration.css">
     <style>
-        /* Apply monospace font to everything */
-        * {
-            font-family: 'Courier New', Courier, monospace !important;
-        }
-        
         /* Basic styling for the code viewer tabs */
         .code-tabs {
             display: flex;
@@ -72,6 +67,8 @@
         .code-panel pre::-webkit-scrollbar-thumb:hover {
             background-color: #00bfff;
         }
+
+
         .copy-btn {
             position: absolute;
             top: 12px;
@@ -86,12 +83,16 @@
             font-size: 13px;
             opacity: 0.8;
         }
+
+
         .copy-btn:hover {
             background: var(--color-primary);
             color: var(--color-btn-primary-text);
             opacity: 1;
             transform: translateY(-2px);
         }
+
+
         .copy-btn.copied {
             background-color: #28a745;
             color: white;
@@ -107,6 +108,8 @@
                 <span class="theme-icon"></span>
             </button>
         </header>
+
+
         <main class="main-content">
             <aside class="sidebar glass-panel">
                 <div class="sidebar-section">
@@ -126,6 +129,8 @@
                                     <li style="padding: 4px 0;"> <strong>Prim</strong> - Minimum Spanning Tree</li>
                                 </ul>
                             </div>
+
+
                             <div style="margin: 16px 0; padding: 12px; background: rgba(50,205,50,0.1); border-radius: 8px; border-left: 3px solid #32CD32;">
                                 <h5 style="color: #32CD32; margin-bottom: 8px;"> What You'll Learn:</h5>
                                 <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px;">
@@ -139,6 +144,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Performance Overview</h3>
                     <div style="background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
@@ -161,6 +168,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Complexity Quick Reference</h3>
                     <div style="overflow-x: auto;">
@@ -205,6 +214,8 @@
                         V = vertices, E = edges, h = height
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Real-World Applications</h3>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -226,6 +237,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Important Notes</h3>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -243,6 +256,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Graph Creation</h3>
                     <div class="button-group">
@@ -259,6 +274,8 @@
                         <input type="text" id="nodeNameInput" class="form-control" placeholder="Enter node name">
                         <button class="btn btn--outline btn--full-width mt-8" id="addNodeManual">Add Node Manually</button>
                     </div>
+
+
                     <div class="form-group">
                         <label class="form-label" for="fromNodeInput">From Node:</label>
                         <input type="text" id="fromNodeInput" class="form-control" placeholder="Source node name">
@@ -272,6 +289,8 @@
                         <button class="btn btn--outline btn--full-width mt-8" id="addEdgeManual">Add Edge Manually</button>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Graph Settings</h3>
                     <div class="form-group">
@@ -288,6 +307,8 @@
                         </label>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Algorithm Selection</h3>
                     <div class="form-group">
@@ -313,6 +334,8 @@
                         <span class="btn-icon"></span>Run Algorithm
                     </button>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Animation Controls</h3>
                     <div class="button-group">
@@ -332,6 +355,8 @@
                         <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="500" step="100">
                     </div>
                 </div>
+
+
                 <div class="sidebar-section collaboration-section">
                     <h3> Collaboration</h3>
                     <div class="collaboration-status">
@@ -372,6 +397,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="sidebar-section">
                     <h3> Graph Actions</h3>
                     <button class="btn btn--outline btn--full-width" id="clearGraphBtn">
@@ -379,11 +406,15 @@
                     </button>
                 </div>
             </aside>
+
+
             <div class="canvas-container">
                 <canvas id="graphCanvas" class="graph-canvas"></canvas>
                 <div class="canvas-overlay" id="canvasOverlay"></div>
             </div>
         </main>
+
+
         <div class="code-viewer-container glass-panel" style="margin: 0 16px 16px; padding: 24px;">
             <h2 style="margin-bottom: 20px;"> C++ Code Snippets</h2>
             <div class="code-tabs">
@@ -400,7 +431,11 @@
 #include &lt;vector&gt;
 #include &lt;queue&gt;
 #include &lt;list&gt;
+
+
 using namespace std;
+
+
 class Graph {
     int V;
     list&lt;int&gt; *adj;
@@ -434,18 +469,26 @@ public:
     }
 };</code></pre>
             </div>
+
+
             <div id="dfs-code" class="code-panel">
                 <button class="copy-btn">Copy</button>
                 <pre><code>#include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;list&gt;
+
+
 using namespace std;
+
+
 class Graph {
     int V;
     list&lt;int&gt; *adj;
     void DFSUtil(int v, vector&lt;bool&gt;&amp; visited) {
         visited[v] = true;
         cout &lt;&lt; v &lt;&lt; " ";
+
+
         for (auto i : adj[v]) {
             if (!visited[i]) {
                 DFSUtil(i, visited);
@@ -466,6 +509,8 @@ public:
     }
 };</code></pre>
             </div>
+
+
             <div id="dijkstra-code" class="code-panel">
                 <button class="copy-btn">Copy</button>
                 <pre><code>#include &lt;iostream&gt;
@@ -473,8 +518,12 @@ public:
 #include &lt;queue&gt;
 #include &lt;list&gt;
 #include &lt;climits&gt;
+
+
 using namespace std;
 using iPair = pair&lt;int, int&gt;;
+
+
 class Graph {
     int V;
     list&lt;iPair&gt; *adj;
@@ -490,11 +539,17 @@ public:
     void shortestPath(int src) {
         priority_queue&lt;iPair, vector&lt;iPair&gt;, greater&lt;iPair&gt;&gt; pq;
         vector&lt;int&gt; dist(V, INT_MAX);
+
+
         pq.push(make_pair(0, src));
         dist[src] = 0;
+
+
         while (!pq.empty()) {
             int u = pq.top().second;
             pq.pop();
+
+
             for (auto const&amp; [v, weight] : adj[u]) {
                 if (dist[v] > dist[u] + weight) {
                     dist[v] = dist[u] + weight;
@@ -502,20 +557,30 @@ public:
                 }
             }
         }
+
+
         for (int i = 0; i &lt; V; ++i)
             cout &lt;&lt; i &lt;&lt; "\t\t" &lt;&lt; dist[i] &lt;&lt; endl;
     }
 };</code></pre>
             </div>
+
+
             <div id="kruskal-code" class="code-panel">
                 <button class="copy-btn">Copy</button>
                 <pre><code>#include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;algorithm&gt;
+
+
 using namespace std;
+
+
 struct Edge {
     int src, dest, weight;
 };
+
+
 struct DSU {
     vector&lt;int&gt; parent;
     DSU(int n) {
@@ -534,9 +599,13 @@ struct DSU {
         }
     }
 };
+
+
 bool compareEdges(const Edge&amp; a, const Edge&amp; b) {
     return a.weight &lt; b.weight;
 }
+
+
 void kruskalMST(int V, vector&lt;Edge&gt;&amp; edges) {
     sort(edges.begin(), edges.end(), compareEdges);
     DSU dsu(V);
@@ -559,8 +628,12 @@ void kruskalMST(int V, vector&lt;Edge&gt;&amp; edges) {
 #include &lt;vector&gt;
 #include &lt;queue&gt;
 #include &lt;climits&gt;
+
+
 using namespace std;
 using iPair = pair&lt;int, int&gt;;
+
+
 class Graph {
     int V;
     vector&lt;iPair&gt; *adj;
@@ -579,15 +652,23 @@ public:
         vector&lt;int&gt; key(V, INT_MAX);
         vector&lt;int&gt; parent(V, -1);
         vector&lt;bool&gt; inMST(V, false);
+
+
         pq.push(make_pair(0, src));
         key[src] = 0;
+
+
         while (!pq.empty()) {
             int u = pq.top().second;
             pq.pop();
+
+
             if(inMST[u] == true){
                 continue;
             }
             inMST[u] = true;
+
+
             for (auto const&amp; [v, weight] : adj[u]) {
                 if (inMST[v] == false &amp;&amp; key[v] > weight) {
                     key[v] = weight;
@@ -596,12 +677,16 @@ public:
                 }
             }
         }
+
+
         for (int i = 1; i &lt; V; ++i)
             cout &lt;&lt; parent[i] &lt;&lt; " - " &lt;&lt; i &lt;&lt; endl;
     }
 };</code></pre>
             </div>
         </div>
+
+
         <footer class="status-bar glass-panel">
             <div class="status-info">
                 <span class="status-item">Nodes: <strong id="nodeCount">0</strong></span>
@@ -610,6 +695,8 @@ public:
             </div>
             <div class="algorithm-status" id="algorithmStatus">Ready to visualize algorithms</div>
         </footer>
+
+
         <div id="contextMenu" class="context-menu glass-panel">
             <div class="context-menu-item" id="contextAddNode">Add Node Here</div>
             <div class="context-menu-item" id="contextConnectNode">Connect to Node</div>
@@ -617,14 +704,20 @@ public:
             <div class="context-menu-item" id="contextDeleteNode">Delete Node</div>
         </div>
     </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tabs = document.querySelectorAll('.code-tab-btn');
             const panels = document.querySelectorAll('.code-panel');
+
+
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     panels.forEach(p => p.classList.remove('active'));
+
+
                     tab.classList.add('active');
                     const targetPanel = document.getElementById(tab.dataset.target);
                     if (targetPanel) {
@@ -632,11 +725,17 @@ public:
                     }
                 });
             });
+
+
             const copyButtons = document.querySelectorAll('.copy-btn');
+
+
             copyButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const codePanel = button.parentElement;
                     const codeToCopy = codePanel.querySelector('pre code').innerText;
+
+
                     navigator.clipboard.writeText(codeToCopy).then(() => {
                         button.innerText = 'Copied!';
                         button.classList.add('copied');
@@ -675,6 +774,8 @@ public:
                 </button>
             </div>
         </div>
+
+
         <div class="gva-chat-history" id="chat-history">
             <div class="gva-chat-message gva-ai-message">
                 <div class="gva-avatar">AI</div>
@@ -683,6 +784,8 @@ public:
                 </div>
             </div>
         </div>
+
+
         <div class="gva-chat-input-area">
             <div class="gva-chat-input-wrapper">
                 <textarea class="gva-chat-input" id="chat-input" placeholder="Ask AI..." rows="1"></textarea>
@@ -692,6 +795,8 @@ public:
             </div>
         </div>
     </div>
+
+
     <button class="gva-floating-toggle" id="floating-toggle-btn" title="Open AI Assistant">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M15 3v18"/></svg>
     </button>
