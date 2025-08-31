@@ -591,11 +591,6 @@ h3 {
   position: absolute;
   inset: -3px;
   border-radius: calc(var(--radius-lg) + 4px);
-  background: linear-gradient(45deg,
-    var(--color-gradient-1),
-    var(--color-gradient-2),
-    var(--color-gradient-3),
-    var(--color-gradient-1));
   background-size: 400% 400%;
   opacity: 0;
   z-index: -1;
